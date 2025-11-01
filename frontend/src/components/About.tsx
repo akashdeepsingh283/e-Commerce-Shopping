@@ -1,13 +1,10 @@
 import { Sparkles, Award, Package } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 
-export default function About() {
-  const navigate = useNavigate();
+interface AboutProps {
+  onReviewsClick: () => void;
+}
 
-  const handleReviewsClick = () => {
-    navigate("/reviews");
-  };
-
+export default function About({ onReviewsClick }: AboutProps) {
   const features = [
     {
       icon: Sparkles,
@@ -74,12 +71,12 @@ export default function About() {
                   </p>
                 </div>
               ))}
-            </div>
 
-            {/*  REVIEWS BUTTON */}
-            <button
-              onClick={handleReviewsClick}
-              className="text-zinc-400 hover:text-white transition-colors mb-6 tracking-wider"
+            </div>
+              {/* ✅REVIEWS BUTTON */}
+              <button
+                onClick={onReviewsClick}
+                className="text-zinc-400 hover:text-white transition-colors mb-6 tracking-wider"
             >
               Reviews & Testimonials →
             </button>

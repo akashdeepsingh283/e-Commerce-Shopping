@@ -84,16 +84,16 @@ export default function OrderConfirmation({
       <div className="min-h-screen bg-black px-4 py-12 pt-32">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-red-900/20 border border-red-700 mb-6">
-            <CheckCircle className="w-10 h-10 text-red-500 rotate-45" />
+      <CheckCircle className="w-10 h-10 text-red-500 rotate-45" />
           </div>
 
           <h1 className="text-5xl font-light tracking-widest text-white mb-4">
             PAYMENT FAILED
-          </h1>
+            </h1>
 
           <p className="text-zinc-400 text-lg tracking-wide mb-2">
             Unfortunately, your payment could not be processed.
-          </p>
+            </p>
 
           <p className="text-zinc-500 mb-10">
             Order ID: {orderId ? orderId.slice(0, 8) : ""}
@@ -169,9 +169,9 @@ export default function OrderConfirmation({
               ORDER DETAILS
             </h2>
             <div className="space-y-4">
-              {orderItems.map((item, index) => (
+              {orderItems.map((item) => (
                 <div
-                  key={item.id || `${item.product_name}-${index}`}
+                  key={item.id}
                   className="flex justify-between pb-4 border-b border-zinc-800"
                 >
                   <div>
