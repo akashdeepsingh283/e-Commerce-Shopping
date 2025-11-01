@@ -1,13 +1,6 @@
 import { useEffect, useState } from 'react';
-import { ShoppingBag, Trash2 } from 'lucide-react';
+import { ShoppingBag, SlidersHorizontal, X, Trash2 } from 'lucide-react';
 import { localProducts } from '../data/products';
-
-interface CategoryRef {
-  id?: string;
-  _id?: string;
-  name?: string;
-  slug?: string;
-}
 
 interface Product {
   id: string;
@@ -18,7 +11,7 @@ interface Product {
   images: string[];
   in_stock: boolean;
   category?: string;
-  category_id?: CategoryRef | null;
+  category_id?: any;
 }
 
 const categories = [
@@ -50,7 +43,7 @@ export default function ProductsPage({
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState(''); // ✅ NEW STATE
+  const [searchQuery, setSearchQuery] = useState(''); //  NEW STATE
 
   // Admin
   const ADMIN_EMAIL = 'akash@gmail.com';
@@ -63,7 +56,7 @@ export default function ProductsPage({
 
   useEffect(() => {
     applyCategoryFilter();
-  }, [selectedCategory, allProducts, searchQuery]); // ✅ Search included
+  }, [selectedCategory, allProducts, searchQuery]); //  Search included
 
   const fetchProducts = async () => {
     setLoading(true);
@@ -104,7 +97,7 @@ export default function ProductsPage({
       ? allProducts
       : allProducts.filter((p) => (p.category || '').toLowerCase() === selectedCategory.toLowerCase());
 
-    // ✅ Apply search filter
+    // Apply search filter
     if (searchQuery.trim() !== '') {
       const q = searchQuery.toLowerCase();
       filtered = filtered.filter(
@@ -192,7 +185,7 @@ export default function ProductsPage({
           {/* Product Grid Section */}
           <div className="flex-1">
 
-            {/* ✅ Search Bar + Count */}
+            {/* Search Bar + Count */}
             <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <p className="text-zinc-400">
                 {products.length} {products.length === 1 ? 'product' : 'products'}
