@@ -72,14 +72,14 @@ export default function About({ onReviewsClick }: AboutProps) {
                 </div>
               ))}
 
+            </div>
               {/* ✅REVIEWS BUTTON */}
               <button
                 onClick={onReviewsClick}
-                className="text-zinc-400 hover:text-white transition-colors tracking-wide text-sm underline underline-offset-4"
-              >
-                REVIEWS
-              </button>
-            </div>
+                className="text-zinc-400 hover:text-white transition-colors mb-6 tracking-wider"
+            >
+              Reviews & Testimonials →
+            </button>
           </div>
 
           {/* RIGHT SIDE IMAGE */}
