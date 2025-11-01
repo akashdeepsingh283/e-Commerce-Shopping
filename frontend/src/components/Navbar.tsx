@@ -1,6 +1,11 @@
 import { ShoppingBag, Menu, X, User, LogOut, Plus, LayoutDashboard } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
+interface User {
+  name?: string;
+  email?: string;
+}
+
 interface NavbarProps {
   cartCount: number;
   onCartClick: () => void;
@@ -12,7 +17,7 @@ interface NavbarProps {
   onAdminAddCollection?: () => void;
   onAdminDashboardClick?: () => void;
   onOrdersClick?: () => void;
-  user: any;
+  user?: User | null;
   onLogout: () => void;
 }
 

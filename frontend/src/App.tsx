@@ -19,6 +19,7 @@ import AdminCollectionForm from './components/AdminCollectionForm';
 import UserOrdersPage from './components/UserOrdersPage';
 import AdminDashboard from './components/AdminDashboard';
 import { useAuth } from './context/AuthContext';
+import reviewspage from './components/ReviewsPage';
 
 type View =
   | 'home'
@@ -265,6 +266,7 @@ function App() {
           <Footer onContactClick={() => setCurrentView('contact')} />
         </>
       )}
+      
 
       {currentView === 'contact' && <ContactPage onBack={handleBackToHome} />}
 

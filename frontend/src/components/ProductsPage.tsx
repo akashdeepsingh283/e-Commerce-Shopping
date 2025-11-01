@@ -1,6 +1,13 @@
 import { useEffect, useState } from 'react';
-import { ShoppingBag, SlidersHorizontal, X, Trash2 } from 'lucide-react';
+import { ShoppingBag, Trash2 } from 'lucide-react';
 import { localProducts } from '../data/products';
+
+interface CategoryRef {
+  id?: string;
+  _id?: string;
+  name?: string;
+  slug?: string;
+}
 
 interface Product {
   id: string;
@@ -11,7 +18,7 @@ interface Product {
   images: string[];
   in_stock: boolean;
   category?: string;
-  category_id?: any;
+  category_id?: CategoryRef | null;
 }
 
 const categories = [
