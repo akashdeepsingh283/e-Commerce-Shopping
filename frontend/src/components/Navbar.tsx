@@ -6,6 +6,13 @@ interface User {
   email?: string;
 }
 
+interface UserType {
+  id?: string;
+  name: string;
+  email?: string;
+  isAdmin?: boolean;
+}
+
 interface NavbarProps {
   cartCount: number;
   onCartClick: () => void;
@@ -13,11 +20,16 @@ interface NavbarProps {
   onHomeClick?: () => void;
   onContactClick: () => void;
   onProductsClick: () => void;
+<<<<<<< Updated upstream
   onAdminAddProduct?: () => void;
   onAdminAddCollection?: () => void;
   onAdminDashboardClick?: () => void;
   onOrdersClick?: () => void;
   user?: User | null;
+=======
+  onOrdersClick: () => void;
+  user: UserType | null;
+>>>>>>> Stashed changes
   onLogout: () => void;
 }
 

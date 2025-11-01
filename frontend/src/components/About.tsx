@@ -29,7 +29,6 @@ export default function About({ onReviewsClick }: AboutProps) {
     <section id="about" className="py-24 bg-black">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-16 items-start">
-          {/* LEFT SIDE CONTENT */}
           <div className="space-y-8">
             <h2 className="text-5xl font-light tracking-widest text-white mb-6">
               OUR BRAND STORY.
@@ -93,6 +92,17 @@ export default function About({ onReviewsClick }: AboutProps) {
               <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-20 transition-opacity duration-700 rounded-xl" />
             </div>
           </div>
+        </div>
+        <div className="relative group flex justify-center">
+          <video
+            src="/review/about.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-full max-w-xl rounded-xl shadow-xl object-cover border border-zinc-700 group-hover:scale-105 transition-transform duration-700"
+          />
+          <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-20 transition-opacity duration-700 rounded-xl" />
         </div>
       </div>
     </section>
