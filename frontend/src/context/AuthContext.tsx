@@ -60,7 +60,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     verifyToken();
   }, []);
 
-  const setAuth = (userData: any, token: string) => {
+  const setAuth = (userData: User, token: string) => {
     setUser(userData);
     setToken(token);
     localStorage.setItem('user', JSON.stringify(userData));

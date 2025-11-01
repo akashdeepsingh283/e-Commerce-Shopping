@@ -4,8 +4,7 @@ interface FooterProps {
   onContactClick: () => void;
 }
 
-
-export default function Footer({ onContactClick}: FooterProps) {
+export default function Footer({ onContactClick }: FooterProps) {
   return (
     <footer className="bg-black border-t border-zinc-900 py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -19,6 +18,7 @@ export default function Footer({ onContactClick}: FooterProps) {
               Each piece tells a story of timeless beauty and exquisite craftsmanship.
             </p>
           </div>
+
           <div>
             <h4 className="text-white tracking-wider mb-4">SHOP</h4>
             <ul className="space-y-2">
