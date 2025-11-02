@@ -33,7 +33,7 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
       }`}
     >
       <div className="text-center">
-        <h1 className="text-6xl md:text-8xl font-light tracking-[0.3em] text-white mb-12 animate-fade-in">
+        <h1 className="text-2xl md:text-8xl font-light tracking-[0.3em] text-white mb-12 animate-fade-in">
           SAI NAMAN PEARLS
         </h1>
 
