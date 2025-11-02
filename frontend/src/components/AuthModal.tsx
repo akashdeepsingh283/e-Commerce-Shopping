@@ -100,7 +100,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
                     onChange={handleChange}
                     required
                     className="w-full bg-black border border-zinc-800 pl-12 pr-4 py-3 text-white focus:border-white focus:outline-none transition-colors"
-                    placeholder="John Doe"
+                    placeholder="Your Name"
                   />
                 </div>
               </div>
