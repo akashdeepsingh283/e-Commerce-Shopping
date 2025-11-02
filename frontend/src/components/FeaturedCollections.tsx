@@ -1,5 +1,4 @@
 import { ChevronRight } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 
 const collections = [
   { title: "BRACELETS", 
@@ -7,7 +6,7 @@ const collections = [
     image: "/collection/Bracelet.jpg" },
 
   { title: "PEARL MALAS", 
-    category: "pearl-malas", 
+    category: "pearl malas", 
     image: "/collection/Mala.jpg" },
 
   { title: "RINGS", 
@@ -23,39 +22,42 @@ const collections = [
     image: "/collection/Earring.jpg" },
     
   { title: "PEARLS BRACELETS", 
-    category: "pearls-bracelets", 
+    category: "pearls bracelets", 
     image: "/collection/PearlBracelet.jpg" },
 ];
 
-export default function CollectionsPage() {
-  const navigate = useNavigate();
+interface FeaturedCollectionsProps {
+  onCollectionClick?: (category: string) => void;
+}
 
+export default function FeaturedCollections({ onCollectionClick }: FeaturedCollectionsProps) {
   const handleCollectionClick = (category: string) => {
-    navigate(`/products?category=${category}`);
+    if (onCollectionClick) {
+      onCollectionClick(category);
+    }
   };
 
   return (
     <section id="collections" className="min-h-screen bg-black text-white py-20 px-6 lg:px-16">
+      <div className="relative overflow-hidden mb-10">
+        <div className="animate-scroll-ltr whitespace-nowrap py-3 text-lg lg:text-2xl tracking-wider font-light text-white">
+          ⭐ EVERY PEARL COMES WITH GUARANTEE CERTIFICATE 
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ⭐
+          FREE DELIVERY ALL OVER INDIA &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          &nbsp;&nbsp;
+          ⭐ STAY STYLISH WITH OUR NEWEST COLLECTION.&nbsp;
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   
+        </div>
+      </div>
 
-    <div className="relative overflow-hidden mb-10">
-  <div className="animate-scroll-ltr whitespace-nowrap py-113 text-lg lg:text-2xl tracking-wider font-light text-white">
-     ⭐ EVERY PEARL COMES WITH GUARANTEE CERTIFICATE 
-     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ⭐
-      FREE DELIVERY ALL OVER INDIA &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      &nbsp;&nbsp;
-      ⭐ STAY STYLISH WITH OUR NEWEST COLLECTION.&nbsp;
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   
-     </div>
-    </div>
-
-   <center>
-     <h1 className="text-4xl lg:text-5x4 font-light tracking-wide mb-20">
-     <b>EXPLORE THE COLLECTION OF PEARLS.</b>
-   </h1>
-     </center>
+      <center>
+        <h1 className="text-4xl lg:text-5xl font-light tracking-wide mb-20">
+          <b>EXPLORE THE COLLECTION OF PEARLS.</b>
+        </h1>
+      </center>
 
       <div className="grid grid-cols-2 md:grid-cols-3 gap-8 place-items-center">
         {collections.map((item, index) => (

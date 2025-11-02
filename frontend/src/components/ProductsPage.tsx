@@ -35,6 +35,7 @@ interface ProductsPageProps {
   onBack: () => void;
   onViewProduct: (productSlug: string) => void;
   onAddToCart: (product: Product) => void;
+  initialCategory?: string | null;
   user?: any;
 }
 
@@ -42,15 +43,16 @@ export default function ProductsPage({
   onBack,
   onViewProduct,
   onAddToCart,
+  initialCategory = null,
   user,
 }: ProductsPageProps) {
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory || 'all');
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState(''); // ✅ NEW STATE
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Admin
   const ADMIN_EMAIL = 'akash@gmail.com';
@@ -62,8 +64,14 @@ export default function ProductsPage({
   }, []);
 
   useEffect(() => {
+    if (initialCategory) {
+      setSelectedCategory(initialCategory);
+    }
+  }, [initialCategory]);
+
+  useEffect(() => {
     applyCategoryFilter();
-  }, [selectedCategory, allProducts, searchQuery]); // ✅ Search included
+  }, [selectedCategory, allProducts, searchQuery]);
 
   const fetchProducts = async () => {
     setLoading(true);
@@ -104,7 +112,7 @@ export default function ProductsPage({
       ? allProducts
       : allProducts.filter((p) => (p.category || '').toLowerCase() === selectedCategory.toLowerCase());
 
-    // ✅ Apply search filter
+    // Apply search filter
     if (searchQuery.trim() !== '') {
       const q = searchQuery.toLowerCase();
       filtered = filtered.filter(
@@ -144,6 +152,12 @@ export default function ProductsPage({
     }
   };
 
+  // Get the category display name
+  const getCategoryDisplayName = () => {
+    const category = categories.find(c => c.id === selectedCategory);
+    return category ? category.name : 'All Products';
+  };
+
   return (
     <div className="min-h-screen bg-black px-4 py-12 pt-32">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -151,19 +165,21 @@ export default function ProductsPage({
         {/* Header */}
         <center className="mb-12 animate-fade-in">
           <h1 className="text-6xl font-light tracking-widest text-white mb-4">
-            ALL PRODUCTS
+            {selectedCategory !== 'all' ? getCategoryDisplayName().toUpperCase() : 'ALL PRODUCTS'}
           </h1>
           <p className="text-zinc-400 text-lg tracking-wide">
-            Explore our complete collection of fine jewelry
+            {selectedCategory !== 'all' 
+              ? `Browse our ${getCategoryDisplayName().toLowerCase()} collection`
+              : 'Explore our complete collection of fine jewelry'
+            }
           </p>
         </center>
-           <button
-              onClick={onBack}
-              className="text-zinc-400 hover:text-white transition-colors mb-6 tracking-wider"
-            >
-              ← BACK TO HOME
-            </button>
-
+        <button
+          onClick={onBack}
+          className="text-zinc-400 hover:text-white transition-colors mb-6 tracking-wider"
+        >
+          ← BACK TO HOME
+        </button>
 
         <div className="flex gap-8">
 
@@ -192,7 +208,7 @@ export default function ProductsPage({
           {/* Product Grid Section */}
           <div className="flex-1">
 
-            {/*Search Bar + Count */}
+            {/* Search Bar + Count */}
             <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <p className="text-zinc-400">
                 {products.length} {products.length === 1 ? 'product' : 'products'}

@@ -1,4 +1,4 @@
-// App.tsx - Complete Implementation with Collections and About views
+// App.tsx - Complete Implementation with Collections Navigation
 import { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
@@ -21,7 +21,6 @@ import UserOrdersPage from './components/UserOrdersPage';
 import AdminDashboard from './components/AdminDashboard';
 import ReviewsPage from './components/ReviewsPage';
 import AdminReviewApproval from './components/AdminReviewApproval';
-import CollectionsPage from './components/FeaturedCollections';
 import { useAuth } from './context/AuthContext';
 
 type View =
@@ -63,6 +62,7 @@ function App() {
   const [showLoading, setShowLoading] = useState(true);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [selectedProductSlug, setSelectedProductSlug] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [orderId, setOrderId] = useState<string | null>(null);
   const [showReviewPopup, setShowReviewPopup] = useState(false);
 
@@ -234,6 +234,7 @@ function App() {
   const handleBackToHome = () => {
     setCurrentView('home');
     setSelectedProductSlug(null);
+    setSelectedCategory(null);
     setOrderId(null);
   };
 
@@ -243,6 +244,11 @@ function App() {
 
   const handleAboutClick = () => {
     setCurrentView('about');
+  };
+
+  const handleCollectionCategoryClick = (category: string) => {
+    setSelectedCategory(category);
+    setCurrentView('products');
   };
 
   const handleLogout = () => {
@@ -262,7 +268,10 @@ function App() {
         onCartClick={() => setIsCartOpen(true)}
         onAuthClick={() => setIsAuthModalOpen(true)}
         onContactClick={() => setCurrentView('contact')}
-        onProductsClick={() => setCurrentView('products')}
+        onProductsClick={() => {
+          setSelectedCategory(null);
+          setCurrentView('products');
+        }}
         onCollectionsClick={handleCollectionsClick}
         onAboutClick={handleAboutClick}
         onAdminAddProduct={() => setIsAdminProductFormOpen(true)}
@@ -278,7 +287,7 @@ function App() {
       {currentView === 'home' && (
         <>
           <Hero />
-          <FeaturedCollections />
+          <FeaturedCollections onCollectionClick={handleCollectionCategoryClick} />
           <ProductGrid onAddToCart={handleAddToCart} onViewProduct={handleViewProduct} />
           <About onReviewsClick={() => setCurrentView('reviews')} />
           <Footer onContactClick={() => setCurrentView('contact')} />
@@ -292,12 +301,13 @@ function App() {
           onBack={handleBackToHome}
           onViewProduct={handleViewProduct}
           onAddToCart={handleAddToCart}
+          initialCategory={selectedCategory}
           user={user}
         />
       )}
 
       {currentView === 'collections' && (
-        <CollectionsPage onBack={handleBackToHome} />
+        <FeaturedCollections onCollectionClick={handleCollectionCategoryClick} />
       )}
 
       {currentView === 'about' && (
