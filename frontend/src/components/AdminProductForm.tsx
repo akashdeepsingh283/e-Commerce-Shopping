@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { X, Upload, Plus, Minus } from 'lucide-react';
+import { X,  Plus, Minus } from 'lucide-react';
 
 interface AdminProductFormProps {
   isOpen: boolean;
