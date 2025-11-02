@@ -12,17 +12,15 @@
   }
 }
 
-@keyframes scroll-ltr {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(100%);
-  }
+
+@keyframes scroll-rtl {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
 }
 
-.animate-scroll-ltr {
-  animation: scroll-ltr 14s linear infinite;
+.animate-scroll-rtl {
+  display: inline-block;
+  animation: scroll-rtl 18s linear infinite;
 }
 
 
@@ -88,4 +86,21 @@
   .delay-1000 {
     animation-delay: 1s;
   }
+
+  @keyframes bgPulse {
+  0% {
+    background: radial-gradient(circle, #7c7c7c, transparent 60%);
+  }
+  50% {
+    background: radial-gradient(circle, #ffffff, transparent 60%);
+  }
+  100% {
+    background: radial-gradient(circle, #7c7c7c, transparent 60%);
+  }
+}
+
+.animate-bg-pulse {
+  animation: bgPulse 5s ease-in-out infinite alternate;
+}
+
 }

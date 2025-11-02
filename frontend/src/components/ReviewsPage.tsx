@@ -196,7 +196,7 @@ export default function ReviewsPage({ onBack }: ReviewsPageProps) {
       return (
         <div key={post._id} className="bg-zinc-950 border border-zinc-800 overflow-hidden">
           {post.embed_url ? (
-            <div className="aspect-[9/16] relative">
+            <div className="aspect-[9/16] relative ">
               <iframe
                 width="100%"
                 height="100%"
@@ -316,11 +316,11 @@ export default function ReviewsPage({ onBack }: ReviewsPageProps) {
           >
             ← BACK TO HOME
           </button>
-          <h1 className="text-6xl font-light tracking-widest text-white mb-4">
+          <h1 className="text-5xl font-light tracking-widest text-white mb-4">
             CUSTOMER LOVE
           </h1>
           <p className="text-zinc-400 text-lg tracking-wide">
-            Discover what our customers are saying about Sai Naman products.
+            Discover what our customers are saying about products.
           </p>
         </div>
 

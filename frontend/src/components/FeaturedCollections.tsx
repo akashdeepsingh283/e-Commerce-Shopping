@@ -40,21 +40,16 @@ export default function FeaturedCollections({ onCollectionClick }: FeaturedColle
   return (
     <section id="collections" className="min-h-screen bg-black text-white py-20 px-6 lg:px-16">
       <div className="relative overflow-hidden mb-10">
-        <div className="animate-scroll-ltr whitespace-nowrap py-3 text-lg lg:text-2xl tracking-wider font-light text-white">
-          ⭐ EVERY PEARL COMES WITH GUARANTEE CERTIFICATE 
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ⭐
-          FREE DELIVERY ALL OVER INDIA &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          &nbsp;&nbsp;
-          ⭐ STAY STYLISH WITH OUR NEWEST COLLECTION.&nbsp;
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   
-        </div>
-      </div>
+  <div className="animate-scroll-rtl whitespace-nowrap py-3 text-lg lg:text-2xl tracking-wider font-light text-white">
+    ⭐ EVERY PEARL COMES WITH GUARANTEE CERTIFICATE 
+    &nbsp;&nbsp;&nbsp; ⭐ FREE DELIVERY ALL OVER INDIA 
+    &nbsp;&nbsp;&nbsp; ⭐ STAY STYLISH WITH OUR NEWEST COLLECTION.
+  </div>
+</div>
+
 
       <center>
-        <h1 className="text-4xl lg:text-5xl font-light tracking-wide mb-20">
+        <h1 className="text-2xl lg:text-5xl font-light tracking-wide mb-20">
           <b>EXPLORE THE COLLECTION OF PEARLS.</b>
         </h1>
       </center>

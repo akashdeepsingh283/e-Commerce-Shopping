@@ -13,7 +13,6 @@ export default function Hero() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // ✅ Scroll handler
   const handleExploreClick = () => {
     if (location.pathname === "/") {
       const target = document.getElementById("collections");
@@ -25,7 +24,6 @@ export default function Hero() {
     }
   };
 
-  // ✅ Scroll if navigated to /#collections
   useEffect(() => {
     if (location.hash === "#collections") {
       const target = document.getElementById("collections");
@@ -45,7 +43,7 @@ export default function Hero() {
         style={{ transform: `translateY(${scrollY * 0.5}px)` }}
       />
 
-      {/* Glowing ambient shapes */}
+      {/* Ambient floating blobs */}
       <div className="absolute inset-0 opacity-20">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-slate-800 rounded-full blur-3xl animate-pulse" />
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-gray-700 rounded-full blur-3xl animate-pulse delay-1000" />
@@ -53,13 +51,16 @@ export default function Hero() {
 
       {/* Hero content */}
       <div className="relative z-10 text-center px-4 animate-fade-in">
-        <div className="relative inline-block mx-auto mb-6 animate-slide-up">
-          <img
-            src="/Logo2.png"
-            alt="NOIR Logo"
-            className="relative mx-auto w-40 md:w-80"
-          />
-        </div>
+
+       {/* LOGO WITH WHITE GLOW BEHIND */}
+<div className="relative inline-block mx-auto mb-6 animate-slide-up">
+  <div className="absolute inset-[-30px] rounded-full bg-white blur-[120px] opacity-80 animate-glow-white" />
+  <img
+    src="/Logo.png"
+    alt="NP Logo"
+    className="relative mx-auto w-40 md:w-80"
+  />
+</div>
 
         <p className="text-xl md:text-2xl text-gray-400 tracking-wider mb-12 animate-slide-up-delay">
           ADD YOUR ELEGANCE TO YOUR LIFESTYLE

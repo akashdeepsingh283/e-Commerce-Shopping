@@ -27,12 +27,12 @@ export default function About({ onReviewsClick }: AboutProps) {
   ];
 
   return (
-    <section id="about" className="py-24 bg-black ">
+    <section id="about" className="px-4 py-12 pt-32 bg-black ">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-16 items-start">
           <div className="space-y-8">
-            <h2 className="text-5xl font-light tracking-widest text-white mb-6">
-              OUR BRAND STORY.
+            <h2 className="text-3xl font-light tracking-widest text-white mb-6">
+              OUR BRAND STORY
             </h2>
 
             <p className="text-zinc-400 text-lg leading-relaxed">
@@ -71,7 +71,7 @@ export default function About({ onReviewsClick }: AboutProps) {
                 <button
                   onClick={onReviewsClick}
                   className="group flex items-center gap-3 px-8 py-4 bg-zinc-950 border border-zinc-800 hover:border-white transition-all duration-300 hover:bg-zinc-900"
-                >
+                  >
                   <div className="flex-1">
                     <p className="text-white text-lg font-light tracking-wider text-left">
                       REVIEWS & TESTIMONIALS
@@ -85,7 +85,6 @@ export default function About({ onReviewsClick }: AboutProps) {
               </div>
             )}
           </div>
-
           {/* RIGHT SIDE IMAGE */}
           <div className="space-y-10">
             <div className="relative group flex justify-center">
