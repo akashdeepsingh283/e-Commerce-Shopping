@@ -31,10 +31,9 @@ export default function About() {
   ];
 
   return (
-    <section id="about" className="py-24 bg-black">
+    <section id="about" className="py-24 bg-black ">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-16 items-start">
-          {/* LEFT SIDE CONTENT */}
           <div className="space-y-8">
             <h2 className="text-5xl font-light tracking-widest text-white mb-6">
               OUR BRAND STORY.
@@ -71,12 +70,12 @@ export default function About() {
             </div>
 
             {/* REVIEWS BUTTON */}
-            <button
-              onClick={handleReviewsClick}
-              className="text-zinc-400 hover:text-white transition-colors mb-6 tracking-wider"
-            >
-              Reviews & Testimonials →
-            </button>
+      <button
+        onClick={handleReviewsClick}
+        className="text-zinc-400 hover:text-white transition-colors mb-6 tracking-wider"
+      >
+        Reviews & Testimonials →
+      </button>
           </div>
 
           {/* RIGHT SIDE IMAGE */}

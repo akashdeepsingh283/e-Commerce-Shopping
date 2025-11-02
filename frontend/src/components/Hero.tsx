@@ -1,14 +1,41 @@
 import { ChevronDown } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export default function Hero() {
   const [scrollY, setScrollY] = useState(0);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // ✅ Scroll handler
+  const handleExploreClick = () => {
+    if (location.pathname === "/") {
+      const target = document.getElementById("collections");
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth" });
+      }
+    } else {
+      navigate("/#collections");
+    }
+  };
+
+  // ✅ Scroll if navigated to /#collections
+  useEffect(() => {
+    if (location.hash === "#collections") {
+      const target = document.getElementById("collections");
+      if (target) {
+        setTimeout(() => {
+          target.scrollIntoView({ behavior: "smooth" });
+        }, 300);
+      }
+    }
+  }, [location]);
 
   return (
     <section id="hero" className="relative h-screen flex items-center justify-center overflow-hidden bg-neutral-950">
@@ -26,12 +53,11 @@ export default function Hero() {
 
       {/* Hero content */}
       <div className="relative z-10 text-center px-4 animate-fade-in">
-        {/* ✅ Logo with glowing white background */}
         <div className="relative inline-block mx-auto mb-6 animate-slide-up">
           <img
             src="/Logo2.png"
             alt="NOIR Logo"
-            className="relative mx-auto w-40 md:w-80 "
+            className="relative mx-auto w-40 md:w-80"
           />
         </div>
 
@@ -39,7 +65,10 @@ export default function Hero() {
           ADD YOUR ELEGANCE TO YOUR LIFESTYLE
         </p>
 
-        <button className="group relative px-12 py-4 text-white border border-gray-700 hover:border-gray-300 transition-all duration-500 tracking-widest overflow-hidden">
+        <button
+          onClick={handleExploreClick}
+          className="group relative px-12 py-4 text-white border border-gray-700 hover:border-gray-300 transition-all duration-500 tracking-widest overflow-hidden"
+        >
           <span className="relative z-10 group-hover:text-black transition-colors duration-500">
             EXPLORE COLLECTION
           </span>

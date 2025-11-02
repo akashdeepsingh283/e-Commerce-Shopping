@@ -68,7 +68,7 @@ export default function ProductsPage({
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:5001/api/admin/products');
+      const res = await fetch('http://localhost:5001/api/products');
       let backendProducts: Product[] = [];
 
       if (res.ok) {
@@ -192,7 +192,7 @@ export default function ProductsPage({
           {/* Product Grid Section */}
           <div className="flex-1">
 
-            {/* ✅ Search Bar + Count */}
+            {/*Search Bar + Count */}
             <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <p className="text-zinc-400">
                 {products.length} {products.length === 1 ? 'product' : 'products'}
