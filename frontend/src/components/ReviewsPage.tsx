@@ -199,7 +199,7 @@ export default function ReviewsPage({ onBack }: ReviewsPageProps) {
             CUSTOMER LOVE
           </h1>
           <p className="text-zinc-400 text-lg tracking-wide">
-            Discover what our customers are saying about NOIR
+            Discover what our customers are saying about Sai Naman products and their experiences.
           </p>
         </div>
 
