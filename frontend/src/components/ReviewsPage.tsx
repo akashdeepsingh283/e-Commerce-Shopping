@@ -1,7 +1,7 @@
 // ReviewsPage.tsx (Enhanced with backend + frontend data merging)
 import { useEffect, useState } from 'react';
 import { Star, Heart, MessageCircle, Instagram, Tv2, Youtube, Play } from 'lucide-react';
-import { localReviews, localSocialPosts } from '../data/reviewsAndSocialPosts';
+import { localReviews, localSocialPosts } from '../data/reviewsAndSocialPosts'
 
 
 interface Review {
@@ -71,12 +71,15 @@ export default function ReviewsPage({ onBack }: ReviewsPageProps) {
       }
 
       // Merge backend and local reviews (remove duplicates by _id)
-      const mergedReviews = [...localReviews];
-      backendReviews.forEach(backendReview => {
-        if (!mergedReviews.some(r => r._id === backendReview._id)) {
-          mergedReviews.push(backendReview);
-        }
-      });
+     const mergedReviews = [...localReviews];
+backendReviews.forEach(backendReview => {
+  if (!mergedReviews.some(r => r._id === backendReview._id)) {
+    mergedReviews.push({
+      ...backendReview,
+      image_url: backendReview.image_url || '', 
+    });
+  }
+});
 
       // Apply sorting
       let sortedReviews = [...mergedReviews];

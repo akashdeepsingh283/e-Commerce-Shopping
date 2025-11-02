@@ -1,13 +1,6 @@
-import { useState } from 'react';
-import {
-  CreditCard,
-  Package,
-  Check,
-  
-} from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { CreditCard, Package, Check } from 'lucide-react';
 import { Product } from '../types';
-import { useEffect } from 'react';
-
 
 interface CartItem extends Product {
   quantity: number;
@@ -15,18 +8,11 @@ interface CartItem extends Product {
 
 interface CheckoutPageProps {
   items: Product[];
-  
   onOrderComplete: (orderId: string) => void;
 }
 
-
-export default function CheckoutPage({
-  items,
-
-  onOrderComplete,
-}: CheckoutPageProps) {
+export default function CheckoutPage({ items, onOrderComplete }: CheckoutPageProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [selectedPayment] = useState<string>('card');
   const [formData, setFormData] = useState({
     customerName: '',
     customerEmail: '',
@@ -35,18 +21,14 @@ export default function CheckoutPage({
     city: '',
     postalCode: '',
     country: 'India',
-    upiId: '',
-    cardNumber: '',
-    cardExpiry: '',
-    cardCvv: '',
   });
 
   useEffect(() => {
-  const script = document.createElement('script');
-  script.src = 'https://checkout.razorpay.com/v1/checkout.js';
-  script.async = true;
-  document.body.appendChild(script);
-}, []);
+    const script = document.createElement('script');
+    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+    script.async = true;
+    document.body.appendChild(script);
+  }, []);
 
   const cartItems = items.reduce((acc, item) => {
     const existing = acc.find((i) => i.id === item.id);
@@ -55,109 +37,94 @@ export default function CheckoutPage({
     return acc;
   }, [] as CartItem[]);
 
-  const subtotal = cartItems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
+  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const shipping = 50;
   const total = subtotal + shipping;
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-
-
-const handlePayment = async () => {
-  try {
-    // 1️⃣ Create order via your backend
-    const res = await fetch('http://localhost:5001/api/payment/order', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ amount: total }), // amount in rupees
-    });
-
-    const order = await res.json();
-    console.log('Order created:', order);
-
-    // 2️⃣ Open Razorpay checkout
-    const options = {
-      key:  'rzp_test_RZe6IBiBhKc4iu', 
-      amount: order.amount,
-      currency: order.currency,
-      name: 'Your Shop Name',
-      description: 'Test Transaction',
-      order_id: order.id,
-      handler: function (response: any) {
-        console.log('Payment successful:', response);
-        alert('Payment successful!');
-      },
-      prefill: {
-        name: 'Test User',
-        email: 'test@example.com',
-        contact: '9999999999'
-      },
-      theme: { color: '#121212' },
-    };
-
-    const rzp = new (window as any).Razorpay(options);
-    rzp.open();
-  } catch (err) {
-    console.error('Payment error:', err);
-    alert('Payment failed');
-  }
-};
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // // Basic validation
-    // if (selectedPayment === 'upi' && !/^[\w.-]+@[\w.-]+$/.test(formData.upiId)) {
-    //   alert('Please enter a valid UPI ID (e.g., name@bank)');
-    //   setIsSubmitting(false);
-    //   return;
-    // }
-
-    // if (selectedPayment === 'card' && formData.cardNumber.length < 12) {
-    //   alert('Please enter a valid card number');
-    //   setIsSubmitting(false);
-    //   return;
-    // }
-
     try {
-      const body = {
-        ...formData,
-        totalAmount: total,
-        paymentMethod: selectedPayment,
-        items: cartItems.map((item) => ({
-          product_id: item.id,
-          product_name: item.name,
-          product_price: item.price,
-          quantity: item.quantity,
-          subtotal: item.price * item.quantity,
-        })),
-      };
-
-      const res = await fetch('/api/orders', {
+      // 1️⃣ Create Razorpay order via backend
+      const res = await fetch('http://localhost:5001/api/payment/order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
+        body: JSON.stringify({ amount: total }),
       });
 
-      if (!res.ok) throw new Error('Failed to create order');
+      const order = await res.json();
+      console.log('Razorpay order created:', order);
 
-      const json = await res.json();
+      // 2️⃣ Razorpay Checkout Options
+      const options = {
+        key: 'rzp_test_RZe6IBiBhKc4iu', // Replace with your Razorpay key
+        amount: order.amount,
+        currency: order.currency,
+        name: 'Your Shop Name',
+        description: 'Order Payment',
+        order_id: order.id,
+        handler: async function (response: any) {
+          console.log('Payment successful:', response);
 
-      await handlePayment();
+          // 3️⃣ Verify payment on backend
+          const verifyRes = await fetch('http://localhost:5001/api/payment/verify', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(response),
+          });
 
+          const verifyJson = await verifyRes.json();
 
-     
-      onOrderComplete(json.id);
+          if (verifyJson.success) {
+         
+            const orderBody = {
+              ...formData,
+              totalAmount: total,
+              paymentMethod: 'razorpay',
+              items: cartItems.map((item) => ({
+                product_id: item.id,
+                product_name: item.name,
+                product_price: item.price,
+                quantity: item.quantity,
+                subtotal: item.price * item.quantity,
+              })),
+            };
+
+            const orderSaveRes = await fetch('/api/orders', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(orderBody),
+            });
+
+            const savedOrder = await orderSaveRes.json();
+            onOrderComplete(savedOrder.id);
+          } else {
+            alert('❌ Payment verification failed. Please contact support.');
+          }
+        },
+        prefill: {
+          name: formData.customerName,
+          email: formData.customerEmail,
+          contact: formData.customerPhone,
+        },
+        theme: { color: '#121212' },
+        modal: {
+          ondismiss: function () {
+            alert('⚠️ Payment cancelled by user.');
+          },
+        },
+      };
+
+      const rzp = new (window as any).Razorpay(options);
+      rzp.open();
     } catch (error) {
-      console.error('Error creating order:', error);
-      alert('Failed to create order. Please try again.');
+      console.error('Error during checkout:', error);
+      alert('Something went wrong. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -171,6 +138,7 @@ const handlePayment = async () => {
         </h1>
 
         <div className="grid lg:grid-cols-2 gap-12">
+          {/* LEFT: Shipping Form */}
           <div className="space-y-8">
             <div className="bg-zinc-950 border border-zinc-800 p-8">
               <div className="flex items-center space-x-3 mb-6">
@@ -181,22 +149,23 @@ const handlePayment = async () => {
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-6">
-                {/* SHIPPING FORM */}
-                {['customerName', 'customerEmail', 'customerPhone', 'shippingAddress', 'city', 'postalCode'].map((field) => (
-                  <div key={field}>
-                    <label className="block text-zinc-400 text-sm mb-2 tracking-wider">
-                      {field.replace('customer', '').replace(/([A-Z])/g, ' $1').toUpperCase()}
-                    </label>
-                    <input
-                      type={field === 'customerEmail' ? 'email' : 'text'}
-                      name={field}
-                      value={(formData as any)[field]}
-                      onChange={handleChange}
-                      required
-                      className="w-full bg-black border border-zinc-800 px-4 py-3 text-white focus:border-white focus:outline-none transition-colors"
-                    />
-                  </div>
-                ))}
+                {['customerName', 'customerEmail', 'customerPhone', 'shippingAddress', 'city', 'postalCode'].map(
+                  (field) => (
+                    <div key={field}>
+                      <label className="block text-zinc-400 text-sm mb-2 tracking-wider">
+                        {field.replace('customer', '').replace(/([A-Z])/g, ' $1').toUpperCase()}
+                      </label>
+                      <input
+                        type={field === 'customerEmail' ? 'email' : 'text'}
+                        name={field}
+                        value={(formData as any)[field]}
+                        onChange={handleChange}
+                        required
+                        className="w-full bg-black border border-zinc-800 px-4 py-3 text-white focus:border-white focus:outline-none transition-colors"
+                      />
+                    </div>
+                  )
+                )}
 
                 <div>
                   <label className="block text-zinc-400 text-sm mb-2 tracking-wider">COUNTRY</label>
@@ -210,8 +179,6 @@ const handlePayment = async () => {
                   </select>
                 </div>
 
-                
-
                 <div className="pt-8">
                   <button
                     type="submit"
@@ -219,35 +186,25 @@ const handlePayment = async () => {
                     className="w-full bg-white text-black py-4 tracking-widest hover:bg-zinc-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
                   >
                     <CreditCard className="w-5 h-5" />
-                    <span>
-                      {isSubmitting ? 'PROCESSING...' : 'PLACE ORDER'}
-                    </span>
+                    <span>{isSubmitting ? 'PROCESSING...' : 'PLACE ORDER'}</span>
                   </button>
                 </div>
               </form>
             </div>
           </div>
 
-          {/* ORDER SUMMARY */}
+          {/* RIGHT: Order Summary */}
           <div className="space-y-6">
             <div className="bg-zinc-950 border border-zinc-800 p-8">
-              <h2 className="text-2xl font-light tracking-wider text-white mb-6">
-                ORDER SUMMARY
-              </h2>
+              <h2 className="text-2xl font-light tracking-wider text-white mb-6">ORDER SUMMARY</h2>
 
               <div className="space-y-4 mb-6 pb-6 border-b border-zinc-800">
                 {cartItems.map((item) => (
                   <div key={item.id} className="flex gap-4">
-                    <img
-                      src={item.images[0]}
-                      alt={item.name}
-                      className="w-20 h-20 object-cover"
-                    />
+                    <img src={item.images[0]} alt={item.name} className="w-20 h-20 object-cover" />
                     <div className="flex-1">
                       <h3 className="text-white font-light">{item.name}</h3>
-                      <p className="text-zinc-500 text-sm">
-                        Qty: {item.quantity}
-                      </p>
+                      <p className="text-zinc-500 text-sm">Qty: {item.quantity}</p>
                       <p className="text-white mt-1">
                         ₹ {(item.price * item.quantity).toLocaleString()}
                       </p>
@@ -267,9 +224,7 @@ const handlePayment = async () => {
                 </div>
                 <div className="flex justify-between text-white text-xl pt-3 border-t border-zinc-800">
                   <span className="tracking-wider">TOTAL</span>
-                  <span className="tracking-wider">
-                    ₹ {total.toLocaleString()}
-                  </span>
+                  <span className="tracking-wider">₹ {total.toLocaleString()}</span>
                 </div>
               </div>
             </div>
@@ -279,7 +234,7 @@ const handlePayment = async () => {
                 <Check className="w-5 h-5 text-white flex-shrink-0 mt-0.5" />
                 <p>
                   All pieces are carefully packaged in our signature gift box
-                  with authenticity certificate
+                  with authenticity certificate.
                 </p>
               </div>
             </div>
