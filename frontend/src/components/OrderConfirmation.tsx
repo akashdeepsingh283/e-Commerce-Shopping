@@ -108,7 +108,7 @@ export default function OrderConfirmation({
             </button>
 
             <p className="text-zinc-500 text-sm">
-              Need help? Contact support at support@email.com
+              Need help? Contact support at sainamanpearls1@gmail.com
             </p>
           </div>
         </div>
