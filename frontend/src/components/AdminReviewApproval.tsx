@@ -1,4 +1,4 @@
-// AdminReviewApproval.tsx - Enhanced
+// AdminReviewApproval.tsx - Fixed counts issue
 import { useEffect, useState } from 'react';
 import { Star, Check, X, Eye, Trash2, RefreshCw } from 'lucide-react';
 
@@ -21,6 +21,7 @@ interface AdminReviewApprovalProps {
 
 export default function AdminReviewApproval({ onClose }: AdminReviewApprovalProps) {
   const [reviews, setReviews] = useState<Review[]>([]);
+  const [allReviews, setAllReviews] = useState<Review[]>([]); // Store all reviews for counts
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'pending' | 'approved'>('pending');
   const [processingIds, setProcessingIds] = useState<Set<string>>(new Set());
@@ -50,6 +51,22 @@ export default function AdminReviewApproval({ onClose }: AdminReviewApprovalProp
       if (response.ok) {
         const data = await response.json();
         setReviews(data);
+        
+        // If we're fetching all reviews, update the allReviews state
+        if (filter === 'all') {
+          setAllReviews(data);
+        } else if (allReviews.length === 0) {
+          // If allReviews is empty, fetch all reviews separately for counts
+          const allResponse = await fetch(`http://localhost:5001/api/admin/reviews?filter=all`, {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+            },
+          });
+          if (allResponse.ok) {
+            const allData = await allResponse.json();
+            setAllReviews(allData);
+          }
+        }
       } else {
         const errorData = await response.json();
         setError(errorData.message || 'Failed to fetch reviews');
@@ -75,13 +92,18 @@ export default function AdminReviewApproval({ onClose }: AdminReviewApprovalProp
       });
 
       if (response.ok) {
+        // Update both reviews and allReviews
         setReviews(prev => prev.map(review => 
           review._id === reviewId ? { ...review, is_approved: true } : review
         ));
+        setAllReviews(prev => prev.map(review => 
+          review._id === reviewId ? { ...review, is_approved: true } : review
+        ));
+        
         if (filter === 'pending') {
           setReviews(prev => prev.filter(review => review._id !== reviewId));
         }
-        // Show success message
+        
         const reviewName = reviews.find(r => r._id === reviewId)?.author_name;
         alert(`✅ Review from ${reviewName} approved successfully!`);
       } else {
@@ -117,12 +139,18 @@ export default function AdminReviewApproval({ onClose }: AdminReviewApprovalProp
       });
 
       if (response.ok) {
+        // Update both reviews and allReviews
         setReviews(prev => prev.map(review => 
           review._id === reviewId ? { ...review, is_approved: false } : review
         ));
+        setAllReviews(prev => prev.map(review => 
+          review._id === reviewId ? { ...review, is_approved: false } : review
+        ));
+        
         if (filter === 'pending') {
           setReviews(prev => prev.filter(review => review._id !== reviewId));
         }
+        
         alert('✅ Review rejected successfully!');
       } else {
         const errorData = await response.json();
@@ -158,6 +186,7 @@ export default function AdminReviewApproval({ onClose }: AdminReviewApprovalProp
 
       if (response.ok) {
         setReviews(prev => prev.filter(review => review._id !== reviewId));
+        setAllReviews(prev => prev.filter(review => review._id !== reviewId));
         alert('✅ Review deleted successfully!');
       } else {
         const errorData = await response.json();
@@ -175,8 +204,10 @@ export default function AdminReviewApproval({ onClose }: AdminReviewApprovalProp
     }
   };
 
-  const pendingCount = reviews.filter(r => !r.is_approved).length;
-  const approvedCount = reviews.filter(r => r.is_approved).length;
+  // Calculate counts from allReviews instead of filtered reviews
+  const totalCount = allReviews.length;
+  const pendingCount = allReviews.filter(r => !r.is_approved).length;
+  const approvedCount = allReviews.filter(r => r.is_approved).length;
 
   return (
     <div className="min-h-screen bg-black py-12 pt-32">
@@ -217,7 +248,7 @@ export default function AdminReviewApproval({ onClose }: AdminReviewApprovalProp
         <div className="grid md:grid-cols-3 gap-6 mb-12">
           <div className="bg-zinc-950 border border-zinc-800 p-6">
             <div className="text-3xl font-light text-white mb-2">
-              {reviews.length}
+              {totalCount}
             </div>
             <p className="text-zinc-400">Total Reviews</p>
           </div>
@@ -264,7 +295,7 @@ export default function AdminReviewApproval({ onClose }: AdminReviewApprovalProp
                 : 'text-zinc-400 hover:text-white'
             }`}
           >
-            ALL ({reviews.length})
+            ALL ({totalCount})
           </button>
         </div>
 
