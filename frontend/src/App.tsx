@@ -257,7 +257,6 @@ function App() {
         onOrdersClick={() => setCurrentView('orders')}
         onHomeClick={handleBackToHome}
         onAdminAddCollection={() => setIsAdminCollectionFormOpen(true)}
-        onReviewsClick={() => setCurrentView('reviews')}
         onAdminReviewsClick={() => setCurrentView('admin-reviews')}
         user={user}
         onLogout={handleLogout}
@@ -268,7 +267,7 @@ function App() {
           <Hero />
           <FeaturedCollections />
           <ProductGrid onAddToCart={handleAddToCart} onViewProduct={handleViewProduct} />
-          <About />
+          <About onReviewsClick={() => setCurrentView('reviews')} />
           <Footer onContactClick={() => setCurrentView('contact')} />
         </>
       )}

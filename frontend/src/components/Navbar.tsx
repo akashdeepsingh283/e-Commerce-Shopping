@@ -12,7 +12,6 @@ interface NavbarProps {
   onOrdersClick: () => void;
   onHomeClick: () => void;
   onAdminAddCollection: () => void;
-  onReviewsClick: () => void;
   onAdminReviewsClick: () => void;
   user: any;
   onLogout: () => void;
@@ -29,7 +28,6 @@ export default function Navbar({
   onOrdersClick,
   onHomeClick,
   onAdminAddCollection,
-  onReviewsClick,
   onAdminReviewsClick,
   user,
   onLogout,
@@ -63,12 +61,6 @@ export default function Navbar({
               className="text-zinc-400 hover:text-white transition-colors tracking-wider text-sm"
             >
               PRODUCTS
-            </button>
-            <button
-              onClick={onReviewsClick}
-              className="text-zinc-400 hover:text-white transition-colors tracking-wider text-sm"
-            >
-              REVIEWS & TESTIMONIALS
             </button>
             <button
               onClick={onContactClick}
@@ -252,15 +244,6 @@ export default function Navbar({
               className="block w-full text-left text-zinc-400 hover:text-white transition-colors tracking-wider text-sm"
             >
               PRODUCTS
-            </button>
-            <button
-              onClick={() => {
-                onReviewsClick();
-                setIsMenuOpen(false);
-              }}
-              className="block w-full text-left text-zinc-400 hover:text-white transition-colors tracking-wider text-sm"
-            >
-              REVIEWS & TESTIMONIALS
             </button>
             <button
               onClick={() => {

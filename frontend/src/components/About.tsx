@@ -1,15 +1,11 @@
-import { Play, Pause, RotateCcw, RotateCw, Maximize, Share2, Sparkles, Award, Package } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Play, Pause, RotateCcw, RotateCw, Maximize, Share2, Sparkles, Award, Package, ArrowRight } from "lucide-react";
 import { useRef, useState } from "react";
 
+interface AboutProps {
+  onReviewsClick?: () => void;
+}
 
-export default function About() {
-  const navigate = useNavigate();
-
-  const handleReviewsClick = () => {
-    navigate("/Reviews");
-  };
-
+export default function About({ onReviewsClick }: AboutProps) {
   const features = [
     {
       icon: Sparkles,
@@ -69,13 +65,25 @@ export default function About() {
               })}
             </div>
 
-            {/* REVIEWS BUTTON */}
-      <button
-        onClick={handleReviewsClick}
-        className="text-zinc-400 hover:text-white transition-colors mb-6 tracking-wider"
-      >
-        Reviews & Testimonials →
-      </button>
+            {/* ENHANCED REVIEWS BUTTON */}
+            {onReviewsClick && (
+              <div className="pt-4">
+                <button
+                  onClick={onReviewsClick}
+                  className="group flex items-center gap-3 px-8 py-4 bg-zinc-950 border border-zinc-800 hover:border-white transition-all duration-300 hover:bg-zinc-900"
+                >
+                  <div className="flex-1">
+                    <p className="text-white text-lg font-light tracking-wider text-left">
+                      REVIEWS & TESTIMONIALS
+                    </p>
+                    <p className="text-zinc-500 text-sm text-left mt-1">
+                      See what our customers are saying
+                    </p>
+                  </div>
+                  <ArrowRight className="w-5 h-5 text-zinc-400 group-hover:text-white group-hover:translate-x-1 transition-all" />
+                </button>
+              </div>
+            )}
           </div>
 
           {/* RIGHT SIDE IMAGE */}
