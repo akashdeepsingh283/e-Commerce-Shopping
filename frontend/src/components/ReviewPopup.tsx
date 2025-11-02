@@ -7,7 +7,7 @@ interface ReviewPopupProps {
   onSubmit: (rating: number, review: string) => void;
 }
 
-export default function ReviewPopup({ isOpen, onClose, onSubmit }: ReviewPopupProps) {
+export default function ReviewPopup({ isOpen, onClose, onSubmit}: ReviewPopupProps) {
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [review, setReview] = useState("");

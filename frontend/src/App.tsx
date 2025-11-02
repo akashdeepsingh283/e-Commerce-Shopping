@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom'; // ⬅ added useLocation
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import ReviewPopup from './components/ReviewPopup';
@@ -19,17 +20,9 @@ import AdminCollectionForm from './components/AdminCollectionForm';
 import UserOrdersPage from './components/UserOrdersPage';
 import AdminDashboard from './components/AdminDashboard';
 import { useAuth } from './context/AuthContext';
-import reviewspage from './components/ReviewsPage';
+import ReviewsPage from './components/ReviewsPage';
 
-type View =
-  | 'home'
-  | 'contact'
-  | 'products'
-  | 'product-detail'
-  | 'checkout'
-  | 'order-confirmation'
-  | 'orders'
-  | 'admin-dashboard';
+
 
 interface Product {
   id: string;
@@ -47,23 +40,35 @@ interface CartItem extends Product {
 
 function App() {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
 
-  const [currentView, setCurrentView] = useState<View>('home');
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isAdminProductFormOpen, setIsAdminProductFormOpen] = useState(false);
   const [isAdminCollectionFormOpen, setIsAdminCollectionFormOpen] = useState(false);
   const [showLoading, setShowLoading] = useState(true);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [selectedProductSlug, setSelectedProductSlug] = useState<string | null>(null);
   const [orderId, setOrderId] = useState<string | null>(null);
   const [showReviewPopup, setShowReviewPopup] = useState(false);
+  const [selectedProductSlug, setSelectedProductSlug] = useState<string | null>(null);
+  const location = useLocation();
 
-  // Sync cart with backend when user logs in
   useEffect(() => {
-    if (user) {
-      syncCartWithBackend();
+  
+  if (location.pathname === "/") {
+    const sectionId = sessionStorage.getItem("scrollToSection");
+    if (sectionId) {
+      setTimeout(() => {
+        const section = document.getElementById(sectionId);
+        section?.scrollIntoView({ behavior: "smooth" });
+        sessionStorage.removeItem("scrollToSection"); 
+      }, 400); 
     }
+  }
+}, [location]);
+
+  useEffect(() => {
+    if (user) syncCartWithBackend();
   }, [user]);
 
   const syncCartWithBackend = async () => {
@@ -72,20 +77,15 @@ function App() {
       if (!token) return;
 
       const res = await fetch('/api/cart', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       if (res.ok) {
         const data = await res.json();
         const items = data.reduce((acc: CartItem[], item: any) => {
           const existing = acc.find((i) => i.id === item.id);
-          if (existing) {
-            existing.quantity += item.quantity || 1;
-          } else {
-            acc.push({ ...item, quantity: item.quantity || 1 });
-          }
+          if (existing) existing.quantity += item.quantity || 1;
+          else acc.push({ ...item, quantity: item.quantity || 1 });
           return acc;
         }, []);
         setCartItems(items);
@@ -95,12 +95,9 @@ function App() {
     }
   };
 
-  // Automatically show Review Popup after 30s of login
   useEffect(() => {
     if (user) {
-      const timer = setTimeout(() => {
-        setShowReviewPopup(true);
-      }, 30000);
+      const timer = setTimeout(() => setShowReviewPopup(true), 30000);
       return () => clearTimeout(timer);
     }
   }, [user]);
@@ -133,11 +130,10 @@ function App() {
     } else {
       setCartItems((prev) => {
         const existing = prev.find((item) => item.id === product.id);
-        if (existing) {
+        if (existing)
           return prev.map((item) =>
             item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
           );
-        }
         return [...prev, { ...product, quantity: 1 }];
       });
     }
@@ -160,13 +156,12 @@ function App() {
         console.error('Failed to update cart', err);
       }
     } else {
-      if (quantity === 0) {
+      if (quantity === 0)
         setCartItems((prev) => prev.filter((item) => item.id !== productId));
-      } else {
+      else
         setCartItems((prev) =>
           prev.map((item) => (item.id === productId ? { ...item, quantity } : item))
         );
-      }
     }
   };
 
@@ -196,22 +191,20 @@ function App() {
       setIsAuthModalOpen(true);
       return;
     }
-    setCurrentView('checkout');
+    navigate('/checkout');
     setIsCartOpen(false);
   };
 
   const handleOrderComplete = async (newOrderId: string) => {
     setOrderId(newOrderId);
-    setCurrentView('order-confirmation');
+    navigate('/order-confirmation');
     setCartItems([]);
     if (user) {
       try {
         const token = localStorage.getItem('token');
         await fetch('/api/cart/clear', {
           method: 'POST',
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         });
       } catch (err) {
         console.error('Failed to clear cart', err);
@@ -221,19 +214,13 @@ function App() {
 
   const handleViewProduct = (slug: string) => {
     setSelectedProductSlug(slug);
-    setCurrentView('product-detail');
-  };
-
-  const handleBackToHome = () => {
-    setCurrentView('home');
-    setSelectedProductSlug(null);
-    setOrderId(null);
+    navigate('/product-details');
   };
 
   const handleLogout = () => {
     logout();
     setCartItems([]);
-    setCurrentView('home');
+    navigate('/');
   };
 
   if (showLoading) {
@@ -246,65 +233,72 @@ function App() {
         cartCount={cartItems.reduce((sum, item) => sum + item.quantity, 0)}
         onCartClick={() => setIsCartOpen(true)}
         onAuthClick={() => setIsAuthModalOpen(true)}
-        onContactClick={() => setCurrentView('contact')}
-        onProductsClick={() => setCurrentView('products')}
+        onContactClick={() => navigate('/contact')}
+        onProductsClick={() => navigate('/products')}
         onAdminAddProduct={() => setIsAdminProductFormOpen(true)}
-        onAdminDashboardClick={() => setCurrentView('admin-dashboard')}
-        onOrdersClick={() => setCurrentView('orders')}
-        onHomeClick={handleBackToHome}
+        onAdminDashboardClick={() => navigate('/admin-dashboard')}
+        onOrdersClick={() => navigate('/orders')}
+        onHomeClick={() => navigate('/')}
         onAdminAddCollection={() => setIsAdminCollectionFormOpen(true)}
         user={user}
         onLogout={handleLogout}
       />
 
-      {currentView === 'home' && (
-        <>
-          <Hero />
-          <FeaturedCollections />
-          <ProductGrid onAddToCart={handleAddToCart} onViewProduct={handleViewProduct} />
-          <About />
-          <Footer onContactClick={() => setCurrentView('contact')} />
-        </>
-      )}
-      
-
-      {currentView === 'contact' && <ContactPage onBack={handleBackToHome} />}
-
-      {currentView === 'products' && (
-        <ProductsPage
-          onBack={handleBackToHome}
-          onViewProduct={handleViewProduct}
-          onAddToCart={handleAddToCart}
-          user={user}
+     
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <>
+              <Hero />
+              <FeaturedCollections />
+              <ProductGrid onAddToCart={handleAddToCart} onViewProduct={handleViewProduct} />
+              <About />
+              <Footer onContactClick={() => navigate('/contact')} />
+            </>
+          }
         />
-      )}
-
-      {currentView === 'product-detail' && selectedProductSlug && (
-        <ProductDetailPage
-          productSlug={selectedProductSlug}
-          onBack={handleBackToHome}
-          onAddToCart={handleAddToCart}
+        <Route path="/contact" element={<ContactPage onBack={() => navigate('/')} />} />
+        <Route
+          path="/products"
+          element={
+            <ProductsPage
+              onBack={() => navigate('/')}
+              onViewProduct={handleViewProduct}
+              onAddToCart={handleAddToCart}
+              user={user}
+            />
+          }
         />
-      )}
-
-      {currentView === 'checkout' && (
-        <CheckoutPage
-          items={cartItems.flatMap((item) =>
-            Array(item.quantity).fill({ ...item, quantity: 1 })
-          )}
-          onOrderComplete={handleOrderComplete}
+        <Route
+          path="/product-details"
+          element={
+            <ProductDetailPage
+              productSlug={selectedProductSlug || ''}
+              onAddToCart={handleAddToCart}
+              onBack={() => navigate('/products')}
+            />
+          }
         />
-      )}
-
-      {currentView === 'order-confirmation' && orderId && (
-        <OrderConfirmation orderId={orderId} onBackToHome={handleBackToHome} />
-      )}
-
-      {currentView === 'orders' && <UserOrdersPage onBack={handleBackToHome} />}
-
-      {currentView === 'admin-dashboard' && (
-        <AdminDashboard onClose={handleBackToHome} />
-      )}
+        <Route
+          path="/checkout"
+          element={
+            <CheckoutPage
+              items={cartItems.flatMap((item) =>
+                Array(item.quantity).fill({ ...item, quantity: 1 })
+              )}
+              onOrderComplete={handleOrderComplete}
+            />
+          }
+        />
+        <Route
+          path="/order-confirmation"
+          element={<OrderConfirmation orderId={orderId ?? ''} onBackToHome={() => navigate('/')} />}
+        />
+        <Route path="/orders" element={<UserOrdersPage onBack={() => navigate('/')} />} />
+        <Route path="/admin-dashboard" element={<AdminDashboard onClose={() => navigate('/')} />} />
+        <Route path="/reviews" element={<ReviewsPage onBack={() => navigate('/')} />} />
+      </Routes>
 
       <CartSidebar
         isOpen={isCartOpen}
@@ -315,24 +309,13 @@ function App() {
         onRemoveItem={handleRemoveItem}
       />
 
-      <AuthModal
-        isOpen={isAuthModalOpen}
-        onClose={() => setIsAuthModalOpen(false)}
-        initialMode="login"
-      />
+      <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} initialMode="login" />
+      <AdminProductForm isOpen={isAdminProductFormOpen} onClose={() => setIsAdminProductFormOpen(false)} />
+      <AdminCollectionForm isOpen={isAdminCollectionFormOpen} onClose={() => setIsAdminCollectionFormOpen(false)} />
 
-      <AdminProductForm
-        isOpen={isAdminProductFormOpen}
-        onClose={() => setIsAdminProductFormOpen(false)}
-      />
-
-      <AdminCollectionForm
-        isOpen={isAdminCollectionFormOpen}
-        onClose={() => setIsAdminCollectionFormOpen(false)}
-      />
-
-      {/* Review Popup appears 30 seconds after login */}
-      {showReviewPopup && <ReviewPopup onClose={() => setShowReviewPopup(false)} />}
+      {showReviewPopup && (
+        <ReviewPopup onClose={() => setShowReviewPopup(false)} isOpen={false} onSubmit={() => {}} />
+      )}
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import { ShoppingBag, Menu, X, User, LogOut, Plus, LayoutDashboard } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { Link , useNavigate , useLocation } from 'react-router-dom'; // ✅ Import Link
 
 interface User {
   name?: string;
@@ -21,46 +22,57 @@ interface NavbarProps {
   onLogout: () => void;
 }
 
-export default function Navbar({ 
-  cartCount, 
-  onCartClick, 
-  onAuthClick, 
-  onHomeClick,
-  onContactClick, 
-  onProductsClick,
+export default function Navbar({
+  
+  cartCount,
+  onCartClick,
+  onAuthClick,
+  //onHomeClick,
+  //onContactClick,
+  //onProductsClick,
   onAdminAddProduct,
   onAdminAddCollection,
   onAdminDashboardClick,
   onOrdersClick,
-  user, 
-  onLogout 
+  user,
+  onLogout,
+
 }: NavbarProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showAdminDropdown, setShowAdminDropdown] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+ 
 
-  // Define admin email (you can also use environment variable)
-  const ADMIN_EMAIL = 'akash@gmail.com'; // Change this to your admin email
-  
-  // Check if current user is admin
+
+  const ADMIN_EMAIL = 'akash@gmail.com';
   const isAdmin = user && user.email === ADMIN_EMAIL;
 
+   const handleScrollNavigation = (sectionId: string) => {
+  if (location.pathname === "/") {
+    const section = document.getElementById(sectionId);
+    section?.scrollIntoView({ behavior: "smooth" });
+  } else {
+    // Save the section id temporarily before navigating
+    sessionStorage.setItem("scrollToSection", sectionId);
+    navigate("/");
+  }
+};
+
+
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
+    const handleScroll = () => setIsScrolled(window.scrollY > 50);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (showAdminDropdown && !(e.target as Element).closest('.admin-dropdown-container')) {
         setShowAdminDropdown(false);
       }
     };
-
     document.addEventListener('click', handleClickOutside);
     return () => document.removeEventListener('click', handleClickOutside);
   }, [showAdminDropdown]);
@@ -73,33 +85,51 @@ export default function Navbar({
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
-          <button 
-            onClick={onHomeClick}
-            className="text-2xl font-light tracking-widest text-white hover:text-zinc-300 transition-colors cursor-pointer"
+          {/* ✅ Brand now uses Link */}
+          <Link
+            to="/"
+            className="text-2xl font-light tracking-widest text-white hover:text-zinc-300 transition-colors"
           >
             SAI NAMAN PEARLS
-          </button>
+          </Link>
 
-          <div className="hidden md:flex items-center space-x-12">
-            <a href="#collections" className="text-zinc-400 hover:text-white transition-colors tracking-wide">
+          {/* Desktop Menu */}
+         <div className="hidden md:flex items-center space-x-12">
+            <button
+              onClick={() => handleScrollNavigation("collections")}
+              className="text-zinc-400 hover:text-white transition-colors tracking-wide"
+            >
               COLLECTIONS
-            </a>
-            <button onClick={onProductsClick} className="text-zinc-400 hover:text-white transition-colors tracking-wide">
+            </button>
+            <Link
+              to="/products"
+              className="text-zinc-400 hover:text-white transition-colors tracking-wide"
+            >
               PRODUCTS
-            </button>
+            </Link>
             {user && onOrdersClick && (
-              <button onClick={onOrdersClick} className="text-zinc-400 hover:text-white transition-colors tracking-wide">
+              <Link
+                to="/orders"
+                className="text-zinc-400 hover:text-white transition-colors tracking-wide"
+              >
                 ORDERS
-              </button>
+              </Link>
             )}
-            <button onClick={onContactClick} className="text-zinc-400 hover:text-white transition-colors tracking-wide">
+            <Link
+              to="/contact"
+              className="text-zinc-400 hover:text-white transition-colors tracking-wide"
+            >
               CONTACT
-            </button>
-            <a href="#about" className="text-zinc-400 hover:text-white transition-colors tracking-wide">
+            </Link>
+             <button
+              onClick={() => handleScrollNavigation("about")}
+              className="text-zinc-400 hover:text-white transition-colors tracking-wide"
+            >
               ABOUT
-            </a>
+            </button>
           </div>
 
+          {/* Right Section */}
           <div className="flex items-center space-x-6">
             {user ? (
               <div className="hidden md:flex items-center space-x-4">
@@ -108,7 +138,7 @@ export default function Navbar({
                   <span className="text-zinc-400 text-sm font-medium">{user.name}</span>
                 </div>
 
-                {/* Admin Dropdown */}
+             
                 {isAdmin && (
                   <div className="relative admin-dropdown-container">
                     <button
@@ -173,6 +203,8 @@ export default function Navbar({
                 <span className="text-sm tracking-wide">LOGIN</span>
               </button>
             )}
+
+            {/* Cart */}
             <button onClick={onCartClick} className="relative group">
               <ShoppingBag className="w-6 h-6 text-zinc-400 group-hover:text-white transition-colors" />
               {cartCount > 0 && (
@@ -181,6 +213,8 @@ export default function Navbar({
                 </span>
               )}
             </button>
+
+            {/* Mobile Menu Toggle */}
             <button
               className="md:hidden text-zinc-400 hover:text-white transition-colors"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -191,64 +225,83 @@ export default function Navbar({
         </div>
       </div>
 
+      {/* ✅ Mobile Menu with Links */}
       {isMobileMenuOpen && (
         <div className="md:hidden absolute top-full left-0 w-full bg-black/95 backdrop-blur-sm border-t border-zinc-800">
           <div className="flex flex-col space-y-6 p-6">
-            <a href="#collections" className="text-zinc-400 hover:text-white transition-colors tracking-wide">
+            <Link
+              to="/collections"
+              className="text-zinc-400 hover:text-white transition-colors tracking-wide"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
               COLLECTIONS
-            </a>
-            <button onClick={onProductsClick} className="text-zinc-400 hover:text-white transition-colors tracking-wide text-left">
+            </Link>
+            <Link
+              to="/products"
+              className="text-zinc-400 hover:text-white transition-colors tracking-wide"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
               PRODUCTS
-            </button>
-            <a href="#about" className="text-zinc-400 hover:text-white transition-colors tracking-wide">
+            </Link>
+            <Link
+              to="/about"
+              className="text-zinc-400 hover:text-white transition-colors tracking-wide"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
               ABOUT
-            </a>
-            <button onClick={onContactClick} className="text-zinc-400 hover:text-white transition-colors tracking-wide text-left">
+            </Link>
+            <Link
+              to="/contact"
+              className="text-zinc-400 hover:text-white transition-colors tracking-wide"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
               CONTACT
-            </button>
+            </Link>
             {user && onOrdersClick && (
-              <button onClick={onOrdersClick} className="text-zinc-400 hover:text-white transition-colors tracking-wide text-left">
+              <Link
+                to="/orders"
+                className="text-zinc-400 hover:text-white transition-colors tracking-wide"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
                 ORDERS
-              </button>
+              </Link>
             )}
 
-            {/* Mobile Admin Menu */}
+            {/* ✅ Admin (unchanged) */}
             {user && isAdmin && (
-              <>
-                <div className="border-t border-zinc-800 pt-4">
-                  <p className="text-zinc-600 text-xs tracking-wider mb-3">ADMIN</p>
-                  <button 
-                    onClick={() => {
-                      onAdminDashboardClick?.();
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className="w-full text-left text-zinc-400 hover:text-white transition-colors tracking-wide flex items-center space-x-2 mb-3"
-                  >
-                    <LayoutDashboard className="w-4 h-4" />
-                    <span>Dashboard</span>
-                  </button>
-                  <button 
-                    onClick={() => {
-                      onAdminAddProduct?.();
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className="w-full text-left text-zinc-400 hover:text-white transition-colors tracking-wide flex items-center space-x-2 mb-3"
-                  >
-                    <Plus className="w-4 h-4" />
-                    <span>Add Product</span>
-                  </button>
-                  <button 
-                    onClick={() => {
-                      onAdminAddCollection?.();
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className="w-full text-left text-zinc-400 hover:text-white transition-colors tracking-wide flex items-center space-x-2"
-                  >
-                    <Plus className="w-4 h-4" />
-                    <span>Add Collection</span>
-                  </button>
-                </div>
-              </>
+              <div className="border-t border-zinc-800 pt-4">
+                <p className="text-zinc-600 text-xs tracking-wider mb-3">ADMIN</p>
+                <button
+                  onClick={() => {
+                    onAdminDashboardClick?.();
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="w-full text-left text-zinc-400 hover:text-white transition-colors tracking-wide flex items-center space-x-2 mb-3"
+                >
+                  <LayoutDashboard className="w-4 h-4" />
+                  <span>Dashboard</span>
+                </button>
+                <button
+                  onClick={() => {
+                    onAdminAddProduct?.();
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="w-full text-left text-zinc-400 hover:text-white transition-colors tracking-wide flex items-center space-x-2 mb-3"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>Add Product</span>
+                </button>
+                <button
+                  onClick={() => {
+                    onAdminAddCollection?.();
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="w-full text-left text-zinc-400 hover:text-white transition-colors tracking-wide flex items-center space-x-2"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>Add Collection</span>
+                </button>
+              </div>
             )}
 
             {user ? (
@@ -257,12 +310,18 @@ export default function Navbar({
                   <p className="text-zinc-600 text-xs tracking-wider mb-2">LOGGED IN AS</p>
                   <p className="text-white text-sm mb-4">{user.name}</p>
                 </div>
-                <button onClick={onLogout} className="text-zinc-400 hover:text-white transition-colors tracking-wide text-left">
+                <button
+                  onClick={onLogout}
+                  className="text-zinc-400 hover:text-white transition-colors tracking-wide text-left"
+                >
                   LOGOUT
                 </button>
               </>
             ) : (
-              <button onClick={onAuthClick} className="text-zinc-400 hover:text-white transition-colors tracking-wide text-left">
+              <button
+                onClick={onAuthClick}
+                className="text-zinc-400 hover:text-white transition-colors tracking-wide text-left"
+              >
                 LOGIN
               </button>
             )}
