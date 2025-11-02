@@ -32,7 +32,7 @@ router.post('/order', async (req, res) => {
   }
 });
 
-// ✅ Verify payment (optional for extra security)
+// Verify payment (optional for extra security)
 router.post('/verify', async (req, res) => {
   const crypto = require('crypto');
   const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
@@ -49,10 +49,7 @@ router.post('/verify', async (req, res) => {
   }
 });
 
-//  Order.findByIdAndUpdate(orderId, {
-//   paymentStatus: 'Paid',
-//   razorpayPaymentId: paymentId,
-// });
+
 
 
 module.exports = router;
