@@ -164,7 +164,7 @@ export default function ProductsPage({
 
         {/* Header */}
         <center className="mb-12 animate-fade-in">
-          <h1 className="text-6xl font-light tracking-widest text-white mb-4">
+          <h1 className="text-4xl font-light tracking-widest text-white mb-4">
             {selectedCategory !== 'all' ? getCategoryDisplayName().toUpperCase() : 'ALL PRODUCTS'}
           </h1>
           <p className="text-zinc-400 text-lg tracking-wide">
