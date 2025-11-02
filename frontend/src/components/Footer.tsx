@@ -27,16 +27,6 @@ export default function Footer({ onContactClick }: FooterProps) {
                   Collections
                 </a>
               </li>
-              <li>
-                <a href="#" className="text-zinc-500 hover:text-white transition-colors text-sm">
-                  New Arrivals
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-zinc-500 hover:text-white transition-colors text-sm">
-                  Best Sellers
-                </a>
-              </li>
             </ul>
           </div>
 
@@ -49,7 +39,7 @@ export default function Footer({ onContactClick }: FooterProps) {
                 </button>
               </li>
               <li>
-                <a href="#" className="text-zinc-500 hover:text-white transition-colors text-sm">
+                <a href="#order" className="text-zinc-500 hover:text-white transition-colors text-sm">
                   Shipping & Returns
                 </a>
               </li>
