@@ -1,3 +1,4 @@
+// App.tsx - Complete Implementation
 import { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
@@ -18,8 +19,9 @@ import AdminProductForm from './components/AdminProductForm';
 import AdminCollectionForm from './components/AdminCollectionForm';
 import UserOrdersPage from './components/UserOrdersPage';
 import AdminDashboard from './components/AdminDashboard';
+import ReviewsPage from './components/ReviewsPage';
+import AdminReviewApproval from './components/AdminReviewApproval';
 import { useAuth } from './context/AuthContext';
-import reviewspage from './components/ReviewsPage';
 
 type View =
   | 'home'
@@ -29,7 +31,9 @@ type View =
   | 'checkout'
   | 'order-confirmation'
   | 'orders'
-  | 'admin-dashboard';
+  | 'admin-dashboard'
+  | 'reviews'
+  | 'admin-reviews';
 
 interface Product {
   id: string;
@@ -71,7 +75,7 @@ function App() {
       const token = localStorage.getItem('token');
       if (!token) return;
 
-      const res = await fetch('/api/cart', {
+      const res = await fetch('http://localhost:5001/api/cart', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -109,7 +113,7 @@ function App() {
     if (user) {
       try {
         const token = localStorage.getItem('token');
-        const res = await fetch('/api/cart/add', {
+        const res = await fetch('http://localhost:5001/api/cart/add', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -147,7 +151,7 @@ function App() {
     if (user) {
       try {
         const token = localStorage.getItem('token');
-        const res = await fetch('/api/cart/update', {
+        const res = await fetch('http://localhost:5001/api/cart/update', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -174,7 +178,7 @@ function App() {
     if (user) {
       try {
         const token = localStorage.getItem('token');
-        const res = await fetch('/api/cart/remove', {
+        const res = await fetch('http://localhost:5001/api/cart/remove', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -207,7 +211,7 @@ function App() {
     if (user) {
       try {
         const token = localStorage.getItem('token');
-        await fetch('/api/cart/clear', {
+        await fetch('http://localhost:5001/api/cart/clear', {
           method: 'POST',
           headers: {
             Authorization: `Bearer ${token}`,
@@ -253,6 +257,8 @@ function App() {
         onOrdersClick={() => setCurrentView('orders')}
         onHomeClick={handleBackToHome}
         onAdminAddCollection={() => setIsAdminCollectionFormOpen(true)}
+        onReviewsClick={() => setCurrentView('reviews')}
+        onAdminReviewsClick={() => setCurrentView('admin-reviews')}
         user={user}
         onLogout={handleLogout}
       />
@@ -266,7 +272,6 @@ function App() {
           <Footer onContactClick={() => setCurrentView('contact')} />
         </>
       )}
-      
 
       {currentView === 'contact' && <ContactPage onBack={handleBackToHome} />}
 
@@ -306,6 +311,14 @@ function App() {
         <AdminDashboard onClose={handleBackToHome} />
       )}
 
+      {currentView === 'reviews' && (
+        <ReviewsPage onBack={handleBackToHome} />
+      )}
+
+      {currentView === 'admin-reviews' && (
+        <AdminReviewApproval onClose={handleBackToHome} />
+      )}
+
       <CartSidebar
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
@@ -331,8 +344,12 @@ function App() {
         onClose={() => setIsAdminCollectionFormOpen(false)}
       />
 
-      {/* Review Popup appears 30 seconds after login */}
-      {showReviewPopup && <ReviewPopup onClose={() => setShowReviewPopup(false)} />}
+      {showReviewPopup && (
+        <ReviewPopup
+          isOpen={showReviewPopup}
+          onClose={() => setShowReviewPopup(false)}
+        />
+      )}
     </div>
   );
 }

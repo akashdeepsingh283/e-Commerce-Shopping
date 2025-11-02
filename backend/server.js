@@ -1,3 +1,4 @@
+// server.js
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
@@ -10,7 +11,7 @@ const PORT = process.env.PORT || 5001;
 app.use(cors({
   origin: 'http://localhost:5173',
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'], 
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
@@ -24,7 +25,6 @@ app.use('/api/admin', adminRoutes);
 
 const paymentRoutes = require('./routes/payment');
 app.use('/api/payment', paymentRoutes);
-
 
 const authRoutes = require('./routes/auth');
 app.use('/api/auth', authRoutes);
@@ -41,23 +41,25 @@ app.use('/api', contentRoutes);
 const ordersRoutes = require('./routes/orders');
 app.use('/api', ordersRoutes);
 
-// NEW: User orders route
 const userOrdersRoutes = require('./routes/userOrders');
 app.use('/api/user', userOrdersRoutes);
 
-// Optional: Payment routes if you have them
-// const paymentRoutes = require('./routes/payment');
-// app.use('/api/payment', paymentRoutes);
+// ✅ NEW: Review routes (fixed import)
+const reviewRoutes = require('./routes/reviews');
+app.use('/api', reviewRoutes);
 
-// basic health
+// Basic health check
 app.get('/api/health', (req, res) => res.json({ ok: true }));
 
-// start server after optional DB connect
+// Start server after optional DB connect
 async function start() {
   const mongo = process.env.MONGO_URI;
   try {
     if (mongo) {
-      await mongoose.connect(mongo, { useNewUrlParser: true, useUnifiedTopology: true });
+      await mongoose.connect(mongo, { 
+        useNewUrlParser: true, 
+        useUnifiedTopology: true 
+      });
       console.log('✅ Connected to MongoDB');
     } else {
       console.log('⚠️  MONGO_URI not set — skipping MongoDB connection (server will still run)');
