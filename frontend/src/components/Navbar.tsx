@@ -13,6 +13,8 @@ interface NavbarProps {
   onHomeClick: () => void;
   onAdminAddCollection: () => void;
   onAdminReviewsClick: () => void;
+  onCollectionsClick: () => void;
+  onAboutClick: () => void;
   user: any;
   onLogout: () => void;
 }
@@ -29,6 +31,8 @@ export default function Navbar({
   onHomeClick,
   onAdminAddCollection,
   onAdminReviewsClick,
+  onCollectionsClick,
+  onAboutClick,
   user,
   onLogout,
 }: NavbarProps) {
@@ -61,6 +65,18 @@ export default function Navbar({
               className="text-zinc-400 hover:text-white transition-colors tracking-wider text-sm"
             >
               PRODUCTS
+            </button>
+            <button
+              onClick={onCollectionsClick}
+              className="text-zinc-400 hover:text-white transition-colors tracking-wider text-sm"
+            >
+              COLLECTIONS
+            </button>
+            <button
+              onClick={onAboutClick}
+              className="text-zinc-400 hover:text-white transition-colors tracking-wider text-sm"
+            >
+              ABOUT
             </button>
             <button
               onClick={onContactClick}
@@ -244,6 +260,24 @@ export default function Navbar({
               className="block w-full text-left text-zinc-400 hover:text-white transition-colors tracking-wider text-sm"
             >
               PRODUCTS
+            </button>
+            <button
+              onClick={() => {
+                onCollectionsClick();
+                setIsMenuOpen(false);
+              }}
+              className="block w-full text-left text-zinc-400 hover:text-white transition-colors tracking-wider text-sm"
+            >
+              COLLECTIONS
+            </button>
+            <button
+              onClick={() => {
+                onAboutClick();
+                setIsMenuOpen(false);
+              }}
+              className="block w-full text-left text-zinc-400 hover:text-white transition-colors tracking-wider text-sm"
+            >
+              ABOUT
             </button>
             <button
               onClick={() => {

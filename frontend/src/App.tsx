@@ -1,4 +1,4 @@
-// App.tsx - Complete Implementation
+// App.tsx - Complete Implementation with Collections and About views
 import { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
@@ -21,6 +21,7 @@ import UserOrdersPage from './components/UserOrdersPage';
 import AdminDashboard from './components/AdminDashboard';
 import ReviewsPage from './components/ReviewsPage';
 import AdminReviewApproval from './components/AdminReviewApproval';
+import CollectionsPage from './components/FeaturedCollections';
 import { useAuth } from './context/AuthContext';
 
 type View =
@@ -33,7 +34,9 @@ type View =
   | 'orders'
   | 'admin-dashboard'
   | 'reviews'
-  | 'admin-reviews';
+  | 'admin-reviews'
+  | 'collections'
+  | 'about';
 
 interface Product {
   id: string;
@@ -234,6 +237,14 @@ function App() {
     setOrderId(null);
   };
 
+  const handleCollectionsClick = () => {
+    setCurrentView('collections');
+  };
+
+  const handleAboutClick = () => {
+    setCurrentView('about');
+  };
+
   const handleLogout = () => {
     logout();
     setCartItems([]);
@@ -252,6 +263,8 @@ function App() {
         onAuthClick={() => setIsAuthModalOpen(true)}
         onContactClick={() => setCurrentView('contact')}
         onProductsClick={() => setCurrentView('products')}
+        onCollectionsClick={handleCollectionsClick}
+        onAboutClick={handleAboutClick}
         onAdminAddProduct={() => setIsAdminProductFormOpen(true)}
         onAdminDashboardClick={() => setCurrentView('admin-dashboard')}
         onOrdersClick={() => setCurrentView('orders')}
@@ -281,6 +294,14 @@ function App() {
           onAddToCart={handleAddToCart}
           user={user}
         />
+      )}
+
+      {currentView === 'collections' && (
+        <CollectionsPage onBack={handleBackToHome} />
+      )}
+
+      {currentView === 'about' && (
+        <About onReviewsClick={() => setCurrentView('reviews')} />
       )}
 
       {currentView === 'product-detail' && selectedProductSlug && (
