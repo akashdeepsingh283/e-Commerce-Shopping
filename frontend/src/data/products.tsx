@@ -12,8 +12,9 @@ export const localProducts = [
     category: 'bracelets',
     images: [
       '/images/products/eclat1.png',
-      '/images/products/eclat2.png',
       '/images/products/eclat3.png',
+      '/public/c.jpg',
+      '/public/c1.jpg',
     ],
     in_stock: true,
     featured: true,
@@ -32,7 +33,8 @@ export const localProducts = [
     images: [
       '/images/products/heirloom1.png',
       '/images/products/heirloom2.png',
-      '/images/products/heirloom3.png',
+      '/public/c.jpg',
+      '/public/c1.jpg',
     ],
     in_stock: true,
     featured: true,
@@ -51,7 +53,9 @@ export const localProducts = [
     images: [
       '/images/products/luna1.png',
       '/images/products/luna2.png',
-      '/images/products/luna3.png',
+      '/public/c.jpg',
+      '/public/c1.jpg',
+
     ],
     in_stock: true,
     featured: true,
@@ -72,6 +76,8 @@ export const localProducts = [
       '/images/products/signature1.png',
       '/images/products/signature2.png',
       '/images/products/signature3.png',
+      '/public/c.jpg',
+      '/public/c1.jpg',
     ],
     in_stock: true,
     featured: true,
@@ -91,7 +97,8 @@ export const localProducts = [
     images: [
       '/images/products/celestial1.png',
       '/images/products/celestial2.png',
-      '/images/products/celestial3.png',
+      '/public/c.jpg',
+      '/public/c1.jpg',
     ],
     in_stock: true,
     featured: true,
