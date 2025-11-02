@@ -65,7 +65,6 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
   };
 
   if (!isOpen) return null;
-
   return (
     <>
       <div

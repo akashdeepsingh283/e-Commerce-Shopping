@@ -1,3 +1,4 @@
+// App.tsx - Complete Implementation with Collections Navigation
 import { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
@@ -54,7 +55,6 @@ function App() {
   const { user, logout } = useAuth();
 
   const [currentView, setCurrentView] = useState<View>('home');
-  const [history, setHistory] = useState<View[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isAdminProductFormOpen, setIsAdminProductFormOpen] = useState(false);
@@ -66,9 +66,11 @@ function App() {
   const [orderId, setOrderId] = useState<string | null>(null);
   const [showReviewPopup, setShowReviewPopup] = useState(false);
 
-  // Sync Cart on Login
+  // Sync cart with backend when user logs in
   useEffect(() => {
-    if (user) syncCartWithBackend();
+    if (user) {
+      syncCartWithBackend();
+    }
   }, [user]);
 
   const syncCartWithBackend = async () => {
@@ -77,15 +79,20 @@ function App() {
       if (!token) return;
 
       const res = await fetch('http://localhost:5001/api/cart', {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       if (res.ok) {
         const data = await res.json();
         const items = data.reduce((acc: CartItem[], item: any) => {
           const existing = acc.find((i) => i.id === item.id);
-          if (existing) existing.quantity += item.quantity || 1;
-          else acc.push({ ...item, quantity: item.quantity || 1 });
+          if (existing) {
+            existing.quantity += item.quantity || 1;
+          } else {
+            acc.push({ ...item, quantity: item.quantity || 1 });
+          }
           return acc;
         }, []);
         setCartItems(items);
@@ -95,50 +102,49 @@ function App() {
     }
   };
 
-  // Review Popup Timer
+  // Automatically show Review Popup after 30s of login
   useEffect(() => {
-    if (!user) return;
-    const timer = setTimeout(() => setShowReviewPopup(true), 30000);
-    return () => clearTimeout(timer);
+    if (user) {
+      const timer = setTimeout(() => {
+        setShowReviewPopup(true);
+      }, 30000);
+      return () => clearTimeout(timer);
+    }
   }, [user]);
 
-  // Navigation
-  const switchView = (newView: View) => {
-    setHistory((prev) => [...prev, currentView]);
-    setCurrentView(newView);
-  };
-
-  const handleBack = () => {
-    setHistory((prev) => {
-      if (!prev.length) return prev;
-      const newHistory = [...prev];
-      const lastView = newHistory.pop()!;
-      setCurrentView(lastView);
-      return newHistory;
-    });
-  };
-
-  // Cart Controls…
   const handleAddToCart = async (product: Product) => {
     if (user) {
       try {
         const token = localStorage.getItem('token');
-        await fetch('http://localhost:5001/api/cart/add', {
+        const res = await fetch('http://localhost:5001/api/cart/add', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-          body: JSON.stringify({ ...product, quantity: 1 }),
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            productId: product.id,
+            name: product.name,
+            price: product.price,
+            images: product.images,
+            description: product.description,
+            slug: product.slug,
+            quantity: 1,
+          }),
         });
-        await syncCartWithBackend();
+
+        if (res.ok) await syncCartWithBackend();
       } catch (err) {
-        console.error('Failed to add', err);
+        console.error('Failed to add to cart', err);
       }
     } else {
       setCartItems((prev) => {
         const existing = prev.find((item) => item.id === product.id);
-        if (existing)
+        if (existing) {
           return prev.map((item) =>
             item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
           );
+        }
         return [...prev, { ...product, quantity: 1 }];
       });
     }
@@ -148,57 +154,81 @@ function App() {
     if (user) {
       try {
         const token = localStorage.getItem('token');
-        await fetch('http://localhost:5001/api/cart/update', {
+        const res = await fetch('http://localhost:5001/api/cart/update', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
           body: JSON.stringify({ productId, quantity }),
         });
-        await syncCartWithBackend();
-      } catch (err) {}
+        if (res.ok) await syncCartWithBackend();
+      } catch (err) {
+        console.error('Failed to update cart', err);
+      }
     } else {
-      if (quantity === 0)
-        return setCartItems((prev) => prev.filter((item) => item.id !== productId));
-
-      setCartItems((prev) =>
-        prev.map((item) => (item.id === productId ? { ...item, quantity } : item))
-      );
+      if (quantity === 0) {
+        setCartItems((prev) => prev.filter((item) => item.id !== productId));
+      } else {
+        setCartItems((prev) =>
+          prev.map((item) => (item.id === productId ? { ...item, quantity } : item))
+        );
+      }
     }
   };
 
-  const handleRemoveItem = (productId: string) =>
-    user
-      ? fetch('http://localhost:5001/api/cart/remove', {
+  const handleRemoveItem = async (productId: string) => {
+    if (user) {
+      try {
+        const token = localStorage.getItem('token');
+        const res = await fetch('http://localhost:5001/api/cart/remove', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` },
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
           body: JSON.stringify({ productId }),
-        }).then(syncCartWithBackend)
-      : setCartItems((prev) => prev.filter((item) => item.id !== productId));
+        });
+        if (res.ok) await syncCartWithBackend();
+      } catch (err) {
+        console.error('Failed to remove item', err);
+      }
+    } else {
+      setCartItems((prev) => prev.filter((item) => item.id !== productId));
+    }
+  };
 
   const handleCheckout = () => {
-    if (!user) return setIsAuthModalOpen(true);
-    switchView('checkout');
+    if (!user) {
+      setIsAuthModalOpen(true);
+      return;
+    }
+    setCurrentView('checkout');
     setIsCartOpen(false);
   };
 
   const handleOrderComplete = async (newOrderId: string) => {
     setOrderId(newOrderId);
-    switchView('order-confirmation');
+    setCurrentView('order-confirmation');
     setCartItems([]);
-    setHistory([]);
     if (user) {
       try {
+        const token = localStorage.getItem('token');
         await fetch('http://localhost:5001/api/cart/clear', {
           method: 'POST',
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
-      } catch {}
+      } catch (err) {
+        console.error('Failed to clear cart', err);
+      }
     }
   };
 
-  // Navigation helpers
   const handleViewProduct = (slug: string) => {
     setSelectedProductSlug(slug);
-    switchView('product-detail');
+    setCurrentView('product-detail');
   };
 
   const handleBackToHome = () => {
@@ -206,24 +236,30 @@ function App() {
     setSelectedProductSlug(null);
     setSelectedCategory(null);
     setOrderId(null);
-    setHistory([]);
   };
 
-  const handleCollectionsClick = () => switchView('collections');
-  const handleAboutClick = () => switchView('about');
+  const handleCollectionsClick = () => {
+    setCurrentView('collections');
+  };
+
+  const handleAboutClick = () => {
+    setCurrentView('about');
+  };
+
   const handleCollectionCategoryClick = (category: string) => {
     setSelectedCategory(category);
-    switchView('products');
+    setCurrentView('products');
   };
 
   const handleLogout = () => {
     logout();
     setCartItems([]);
     setCurrentView('home');
-    setHistory([]);
   };
 
-  if (showLoading) return <LoadingScreen onComplete={() => setShowLoading(false)} />;
+  if (showLoading) {
+    return <LoadingScreen onComplete={() => setShowLoading(false)} />;
+  }
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -231,16 +267,19 @@ function App() {
         cartCount={cartItems.reduce((sum, item) => sum + item.quantity, 0)}
         onCartClick={() => setIsCartOpen(true)}
         onAuthClick={() => setIsAuthModalOpen(true)}
-        onContactClick={() => switchView('contact')}
-        onProductsClick={() => { setSelectedCategory(null); switchView('products'); }}
+        onContactClick={() => setCurrentView('contact')}
+        onProductsClick={() => {
+          setSelectedCategory(null);
+          setCurrentView('products');
+        }}
         onCollectionsClick={handleCollectionsClick}
         onAboutClick={handleAboutClick}
         onAdminAddProduct={() => setIsAdminProductFormOpen(true)}
-        onAdminDashboardClick={() => switchView('admin-dashboard')}
-        onOrdersClick={() => switchView('orders')}
+        onAdminDashboardClick={() => setCurrentView('admin-dashboard')}
+        onOrdersClick={() => setCurrentView('orders')}
         onHomeClick={handleBackToHome}
         onAdminAddCollection={() => setIsAdminCollectionFormOpen(true)}
-        onAdminReviewsClick={() => switchView('admin-reviews')}
+        onAdminReviewsClick={() => setCurrentView('admin-reviews')}
         user={user}
         onLogout={handleLogout}
       />
@@ -250,16 +289,16 @@ function App() {
           <Hero />
           <FeaturedCollections onCollectionClick={handleCollectionCategoryClick} />
           <ProductGrid onAddToCart={handleAddToCart} onViewProduct={handleViewProduct} />
-          <About onReviewsClick={() => switchView('reviews')} />
-          <Footer onContactClick={() => switchView('contact')} />
+          <About onReviewsClick={() => setCurrentView('reviews')} />
+          <Footer onContactClick={() => setCurrentView('contact')} />
         </>
       )}
 
-      {currentView === 'contact' && <ContactPage onBack={handleBack} />}
+      {currentView === 'contact' && <ContactPage onBack={handleBackToHome} />}
 
       {currentView === 'products' && (
         <ProductsPage
-          onBack={handleBack}
+          onBack={handleBackToHome}
           onViewProduct={handleViewProduct}
           onAddToCart={handleAddToCart}
           initialCategory={selectedCategory}
@@ -272,16 +311,22 @@ function App() {
       )}
 
       {currentView === 'about' && (
-        <About onReviewsClick={() => switchView('reviews')} />
+        <About onReviewsClick={() => setCurrentView('reviews')} />
       )}
 
       {currentView === 'product-detail' && selectedProductSlug && (
-        <ProductDetailPage productSlug={selectedProductSlug} onBack={handleBack} onAddToCart={handleAddToCart} />
+        <ProductDetailPage
+          productSlug={selectedProductSlug}
+          onBack={handleBackToHome}
+          onAddToCart={handleAddToCart}
+        />
       )}
 
       {currentView === 'checkout' && (
         <CheckoutPage
-          items={cartItems.flatMap((item) => Array(item.quantity).fill({ ...item, quantity: 1 }))}
+          items={cartItems.flatMap((item) =>
+            Array(item.quantity).fill({ ...item, quantity: 1 })
+          )}
           onOrderComplete={handleOrderComplete}
         />
       )}
@@ -290,13 +335,19 @@ function App() {
         <OrderConfirmation orderId={orderId} onBackToHome={handleBackToHome} />
       )}
 
-      {currentView === 'orders' && <UserOrdersPage onBack={handleBack} />}
+      {currentView === 'orders' && <UserOrdersPage onBack={handleBackToHome} />}
 
-      {currentView === 'admin-dashboard' && <AdminDashboard onClose={handleBack} />}
+      {currentView === 'admin-dashboard' && (
+        <AdminDashboard onClose={handleBackToHome} />
+      )}
 
-      {currentView === 'reviews' && <ReviewsPage onBack={handleBack} />}
+      {currentView === 'reviews' && (
+        <ReviewsPage onBack={handleBackToHome} />
+      )}
 
-      {currentView === 'admin-reviews' && <AdminReviewApproval onClose={handleBack} />}
+      {currentView === 'admin-reviews' && (
+        <AdminReviewApproval onClose={handleBackToHome} />
+      )}
 
       <CartSidebar
         isOpen={isCartOpen}
@@ -307,13 +358,28 @@ function App() {
         onRemoveItem={handleRemoveItem}
       />
 
-      <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} initialMode="login" />
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        initialMode="login"
+      />
 
-      <AdminProductForm isOpen={isAdminProductFormOpen} onClose={() => setIsAdminProductFormOpen(false)} />
+      <AdminProductForm
+        isOpen={isAdminProductFormOpen}
+        onClose={() => setIsAdminProductFormOpen(false)}
+      />
 
-      <AdminCollectionForm isOpen={isAdminCollectionFormOpen} onClose={() => setIsAdminCollectionFormOpen(false)} />
+      <AdminCollectionForm
+        isOpen={isAdminCollectionFormOpen}
+        onClose={() => setIsAdminCollectionFormOpen(false)}
+      />
 
-      {showReviewPopup && <ReviewPopup isOpen={showReviewPopup} onClose={() => setShowReviewPopup(false)} />}
+      {showReviewPopup && (
+        <ReviewPopup
+          isOpen={showReviewPopup}
+          onClose={() => setShowReviewPopup(false)}
+        />
+      )}
     </div>
   );
 }

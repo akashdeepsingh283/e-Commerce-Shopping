@@ -105,14 +105,14 @@ export default function AdminReviewApproval({ onClose }: AdminReviewApprovalProp
         }
         
         const reviewName = reviews.find(r => r._id === reviewId)?.author_name;
-        alert(`✅ Review from ${reviewName} approved successfully!`);
+        alert(` Review from ${reviewName} approved successfully!`);
       } else {
         const errorData = await response.json();
-        alert(`❌ Failed to approve review: ${errorData.message}`);
+        alert(` Failed to approve review: ${errorData.message}`);
       }
     } catch (error) {
       console.error('Error approving review:', error);
-      alert('❌ Error approving review. Please try again.');
+      alert(' Error approving review. Please try again.');
     } finally {
       setProcessingIds(prev => {
         const next = new Set(prev);
@@ -151,14 +151,14 @@ export default function AdminReviewApproval({ onClose }: AdminReviewApprovalProp
           setReviews(prev => prev.filter(review => review._id !== reviewId));
         }
         
-        alert('✅ Review rejected successfully!');
+        alert(' Review rejected successfully!');
       } else {
         const errorData = await response.json();
-        alert(`❌ Failed to reject review: ${errorData.message}`);
+        alert(` Failed to reject review: ${errorData.message}`);
       }
     } catch (error) {
       console.error('Error rejecting review:', error);
-      alert('❌ Error rejecting review. Please try again.');
+      alert(' Error rejecting review. Please try again.');
     } finally {
       setProcessingIds(prev => {
         const next = new Set(prev);
@@ -187,14 +187,14 @@ export default function AdminReviewApproval({ onClose }: AdminReviewApprovalProp
       if (response.ok) {
         setReviews(prev => prev.filter(review => review._id !== reviewId));
         setAllReviews(prev => prev.filter(review => review._id !== reviewId));
-        alert('✅ Review deleted successfully!');
+        alert(' Review deleted successfully!');
       } else {
         const errorData = await response.json();
-        alert(`❌ Failed to delete review: ${errorData.message}`);
+        alert(` Failed to delete review: ${errorData.message}`);
       }
     } catch (error) {
       console.error('Error deleting review:', error);
-      alert('❌ Error deleting review. Please try again.');
+      alert(' Error deleting review. Please try again.');
     } finally {
       setProcessingIds(prev => {
         const next = new Set(prev);

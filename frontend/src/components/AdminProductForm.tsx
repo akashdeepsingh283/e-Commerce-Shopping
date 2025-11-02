@@ -252,7 +252,7 @@ export default function AdminProductForm({ isOpen, onClose, onSuccess }: AdminPr
             {/* Price */}
             <div>
               <label className="block text-zinc-400 text-sm mb-2 tracking-wider">
-                PRICE * (USD)
+                PRICE * (INR)
               </label>
               <input
                 type="number"

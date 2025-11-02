@@ -91,7 +91,7 @@ export default function ProductGrid({ onAddToCart, onViewProduct }: ProductGridP
     e.stopPropagation();
     onAddToCart(product);
 
-    toast.success(`${product.name} added to your bag! 🛍️`, {
+    toast.success(`${product.name} added to your bag!`, {
       position: 'top-right',
       autoClose: 2000,
       hideProgressBar: false,

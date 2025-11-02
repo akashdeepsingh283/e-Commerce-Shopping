@@ -116,7 +116,7 @@ export default function ReviewPopup({ isOpen, onClose }: ReviewPopupProps) {
             value={formData.author_name}
             onChange={(e) => setFormData({ ...formData, author_name: e.target.value })}
             className="w-full bg-zinc-900 border border-zinc-700 text-white p-3 tracking-wide placeholder:text-zinc-500"
-            placeholder="JYour Name"
+            placeholder="Your Name"
             required
           />
         </div>
