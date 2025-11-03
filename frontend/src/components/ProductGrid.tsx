@@ -19,9 +19,10 @@ interface Product {
 interface ProductGridProps {
   onAddToCart: (product: Product) => void;
   onViewProduct: (productSlug: string) => void;
+  onViewAllClick?: () => void;
 }
 
-export default function ProductGrid({ onAddToCart, onViewProduct }: ProductGridProps) {
+export default function ProductGrid({ onAddToCart, onViewAllClick, onViewProduct }: ProductGridProps) {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -171,6 +172,16 @@ export default function ProductGrid({ onAddToCart, onViewProduct }: ProductGridP
             </div>
           ))}
         </div>
+                {onViewAllClick && (
+          <div className="flex justify-center">
+            <button
+              onClick={onViewAllClick}
+              className="px-12 py-4 border border-white text-white tracking-widest font-light hover:bg-white hover:text-black transition-all duration-300"
+            >
+              VIEW ALL PRODUCTS
+            </button>
+          </div>
+        )}
       </div>
     </section>
   );
