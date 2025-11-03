@@ -12,10 +12,13 @@ interface CheckoutPageProps {
 }
 
 export default function CheckoutPage({ items, onOrderComplete }: CheckoutPageProps) {
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const token = localStorage.getItem('token');
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
-    customerName: '',
-    customerEmail: '',
+    customerName: user.name || '',
+    customerEmail: user.email || '',
     customerPhone: '',
     shippingAddress: '',
     city: '',
@@ -50,7 +53,6 @@ export default function CheckoutPage({ items, onOrderComplete }: CheckoutPagePro
     setIsSubmitting(true);
 
     try {
-      // 1️⃣ Create Razorpay order via backend
       const res = await fetch('http://localhost:5001/api/payment/order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -58,20 +60,15 @@ export default function CheckoutPage({ items, onOrderComplete }: CheckoutPagePro
       });
 
       const order = await res.json();
-      console.log('Razorpay order created:', order);
 
-      // 2️⃣ Razorpay Checkout Options
       const options = {
-        key: 'rzp_test_RZe6IBiBhKc4iu', // Replace with your Razorpay key
+        key: 'rzp_test_RZe6IBiBhKc4iu',
         amount: order.amount,
         currency: order.currency,
         name: 'Your Shop Name',
         description: 'Order Payment',
         order_id: order.id,
         handler: async function (response: any) {
-          console.log('Payment successful:', response);
-
-          // 3️⃣ Verify payment on backend
           const verifyRes = await fetch('http://localhost:5001/api/payment/verify', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -81,7 +78,6 @@ export default function CheckoutPage({ items, onOrderComplete }: CheckoutPagePro
           const verifyJson = await verifyRes.json();
 
           if (verifyJson.success) {
-         
             const orderBody = {
               ...formData,
               totalAmount: total,
@@ -95,14 +91,17 @@ export default function CheckoutPage({ items, onOrderComplete }: CheckoutPagePro
               })),
             };
 
-            const orderSaveRes = await fetch('/api/orders', {
+            const orderSaveRes = await fetch('http://localhost:5001/api/orders/', {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
+              headers: {
+                'Content-Type': 'application/json',
+                ...(token ? { Authorization: `Bearer ${token}` } : {}),
+              },
               body: JSON.stringify(orderBody),
             });
 
             const savedOrder = await orderSaveRes.json();
-            onOrderComplete(savedOrder.id);
+            onOrderComplete(savedOrder.id || savedOrder._id);
           } else {
             alert('❌ Payment verification failed. Please contact support.');
           }
@@ -138,7 +137,6 @@ export default function CheckoutPage({ items, onOrderComplete }: CheckoutPagePro
         </h1>
 
         <div className="grid lg:grid-cols-2 gap-12">
-          {/* LEFT: Shipping Form */}
           <div className="space-y-8">
             <div className="bg-zinc-950 border border-zinc-800 p-8">
               <div className="flex items-center space-x-3 mb-6">
@@ -159,9 +157,12 @@ export default function CheckoutPage({ items, onOrderComplete }: CheckoutPagePro
                         type={field === 'customerEmail' ? 'email' : 'text'}
                         name={field}
                         value={(formData as any)[field]}
-                        onChange={handleChange}
+                        onChange={field === 'customerEmail' ? undefined : handleChange}
                         required
-                        className="w-full bg-black border border-zinc-800 px-4 py-3 text-white focus:border-white focus:outline-none transition-colors"
+                        disabled={field === 'customerEmail'}
+                        className={`w-full bg-black border border-zinc-800 px-4 py-3 text-white focus:border-white focus:outline-none transition-colors ${
+                          field === 'customerEmail' ? 'opacity-60 cursor-not-allowed' : ''
+                        }`}
                       />
                     </div>
                   )
@@ -193,7 +194,6 @@ export default function CheckoutPage({ items, onOrderComplete }: CheckoutPagePro
             </div>
           </div>
 
-          {/* RIGHT: Order Summary */}
           <div className="space-y-6">
             <div className="bg-zinc-950 border border-zinc-800 p-8">
               <h2 className="text-2xl font-light tracking-wider text-white mb-6">ORDER SUMMARY</h2>

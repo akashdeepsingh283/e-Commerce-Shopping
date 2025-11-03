@@ -1,5 +1,6 @@
 import { ShoppingBag, Menu, X, User, LogOut, Package, LayoutDashboard, Plus, Folder, Star } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom'; // ✅ Added for router navigation
 
 interface User {
   name: string;
@@ -29,16 +30,14 @@ export default function Navbar(props: NavbarProps) {
     cartCount,
     onCartClick,
     onAuthClick,
-    onContactClick,
-    onProductsClick,
+
     onAdminAddProduct,
     onAdminDashboardClick,
     onOrdersClick,
-    onHomeClick,
+   
     onAdminAddCollection,
     onAdminReviewsClick,
-    onCollectionsClick,
-    onAboutClick,
+
     user,
     onLogout,
   } = props;
@@ -64,29 +63,28 @@ export default function Navbar(props: NavbarProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
           
-          {/* ✅ Mobile Logo only */}
-          <button onClick={onHomeClick} className="flex items-center space-x-3">
+          {/*  Logo */}
+          <Link to="/" className="flex items-center space-x-3">
             <img
               src="/Logo2.png"
               alt="SAI NAMAN PEARLS"
               className="h-9 w-auto object-contain md:hidden"
             />
-            {/* ✅ Desktop text logo only */}
             <span className="hidden md:block text-xl font-light tracking-widest text-white">
               SAI NAMAN PEARLS
             </span>
-          </button>
+          </Link>
 
-          {/* Desktop Navigation */}
+          {/*  Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-12">
-            <button onClick={onHomeClick} className="text-zinc-400 hover:text-white transition-colors tracking-wide">HOME</button>
-            <button onClick={onProductsClick} className="text-zinc-400 hover:text-white transition-colors tracking-wide">PRODUCTS</button>
-            <button onClick={onCollectionsClick} className="text-zinc-400 hover:text-white transition-colors tracking-wide">COLLECTIONS</button>
-            <button onClick={onAboutClick} className="text-zinc-400 hover:text-white transition-colors tracking-wide">ABOUT</button>
-            <button onClick={onContactClick} className="text-zinc-400 hover:text-white transition-colors tracking-wide">CONTACT</button>
+            <Link to="/" className="text-zinc-400 hover:text-white transition-colors tracking-wide">HOME</Link>
+            <Link to="/products" className="text-zinc-400 hover:text-white transition-colors tracking-wide">PRODUCTS</Link>
+            <Link to="/collections" className="text-zinc-400 hover:text-white transition-colors tracking-wide">COLLECTIONS</Link>
+            <Link to="/about" className="text-zinc-400 hover:text-white transition-colors tracking-wide">ABOUT</Link>
+            <Link to="/contact" className="text-zinc-400 hover:text-white transition-colors tracking-wide">CONTACT</Link>
           </div>
 
-          {/* Right Icons */}
+          {/*  Right Icons */}
           <div className="flex items-center space-x-6">
             {/* Cart */}
             <button onClick={onCartClick} className="relative text-zinc-400 hover:text-white transition-colors">
@@ -122,6 +120,7 @@ export default function Navbar(props: NavbarProps) {
                           <Package className="w-4 h-4" /><span className="tracking-wider text-sm">MY ORDERS</span>
                         </button>
 
+                        {/* Admin Options Kept Intact */}
                         {isAdmin && (
                           <>
                             <div className="border-t border-zinc-800 my-2" />
@@ -165,7 +164,7 @@ export default function Navbar(props: NavbarProps) {
               </button>
             )}
 
-            {/* Mobile Menu Toggle */}
+            {/*  Mobile Menu Toggle */}
             <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="md:hidden text-zinc-400 hover:text-white transition-colors">
               {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -173,15 +172,15 @@ export default function Navbar(props: NavbarProps) {
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/*  Mobile Menu */}
       {isMenuOpen && (
         <div className="md:hidden bg-zinc-950 border-t border-zinc-900">
           <div className="px-4 py-6 space-y-4">
-            <button onClick={() => { onHomeClick(); setIsMenuOpen(false); }} className="block w-full text-left text-zinc-400 hover:text-white transition-colors tracking-wider text-sm">HOME</button>
-            <button onClick={() => { onProductsClick(); setIsMenuOpen(false); }} className="block w-full text-left text-zinc-400 hover:text-white transition-colors tracking-wider text-sm">PRODUCTS</button>
-            <button onClick={() => { onCollectionsClick(); setIsMenuOpen(false); }} className="block w-full text-left text-zinc-400 hover:text-white transition-colors tracking-wider text-sm">COLLECTIONS</button>
-            <button onClick={() => { onAboutClick(); setIsMenuOpen(false); }} className="block w-full text-left text-zinc-400 hover:text-white transition-colors tracking-wider text-sm">ABOUT</button>
-            <button onClick={() => { onContactClick(); setIsMenuOpen(false); }} className="block w-full text-left text-zinc-400 hover:text-white transition-colors tracking-wider text-sm">CONTACT</button>
+            <Link to="/" onClick={() => setIsMenuOpen(false)} className="block w-full text-left text-zinc-400 hover:text-white transition-colors tracking-wider text-sm">HOME</Link>
+            <Link to="/products" onClick={() => setIsMenuOpen(false)} className="block w-full text-left text-zinc-400 hover:text-white transition-colors tracking-wider text-sm">PRODUCTS</Link>
+            <Link to="/collections" onClick={() => setIsMenuOpen(false)} className="block w-full text-left text-zinc-400 hover:text-white transition-colors tracking-wider text-sm">COLLECTIONS</Link>
+            <Link to="/about" onClick={() => setIsMenuOpen(false)} className="block w-full text-left text-zinc-400 hover:text-white transition-colors tracking-wider text-sm">ABOUT</Link>
+            <Link to="/contact" onClick={() => setIsMenuOpen(false)} className="block w-full text-left text-zinc-400 hover:text-white transition-colors tracking-wider text-sm">CONTACT</Link>
           </div>
         </div>
       )}

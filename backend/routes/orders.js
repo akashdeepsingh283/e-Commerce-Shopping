@@ -34,7 +34,8 @@ router.post('/orders', async (req, res) => {
       status: 'pending',
     });
 
-    await order.save();
+     await order.save();
+  
 
     const itemsToSave = items.map((it) => ({
       order_id: order._id,
@@ -44,8 +45,8 @@ router.post('/orders', async (req, res) => {
       quantity: it.quantity,
       subtotal: it.subtotal,
     }));
-
-    await OrderItem.insertMany(itemsToSave);
+    
+     await OrderItem.insertMany(itemsToSave);
 
     res.status(201).json({ id: order._id });
   } catch (err) {

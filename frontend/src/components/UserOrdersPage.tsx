@@ -101,7 +101,7 @@ export default function UserOrdersPage({ onBack }: UserOrdersPageProps) {
 
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('http://localhost:5001/api/user/orders/${orderId}', {
+      const res = await fetch(`http://localhost:5001/api/user/orders/${orderId}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }

@@ -3,6 +3,7 @@ import { ShoppingBag } from 'lucide-react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { localProducts } from '../data/products';
+import { useNavigate } from 'react-router-dom';
 
 interface Product {
   id: string;
@@ -11,7 +12,6 @@ interface Product {
   description: string;
   price: number;
   images: string[];
-  
   in_stock: boolean;
   featured?: boolean;
 }
@@ -19,12 +19,12 @@ interface Product {
 interface ProductGridProps {
   onAddToCart: (product: Product) => void;
   onViewProduct: (productSlug: string) => void;
-  onViewAllClick?: () => void;
 }
 
-export default function ProductGrid({ onAddToCart, onViewAllClick, onViewProduct }: ProductGridProps) {
+export default function ProductGrid({ onAddToCart, onViewProduct }: ProductGridProps) {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+   const navigate = useNavigate();
 
   useEffect(() => {
     fetchProducts();
@@ -33,23 +33,19 @@ export default function ProductGrid({ onAddToCart, onViewAllClick, onViewProduct
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      // Try to fetch from backend
       const res = await fetch('http://localhost:5001/api/products?featured=true');
-      
       let backendProducts: Product[] = [];
 
       if (res.ok) {
         const data = await res.json();
         console.log('Backend products response:', data);
-        
-        // Handle both array response and paginated response
+
         if (Array.isArray(data)) {
           backendProducts = data;
         } else if (data.products && Array.isArray(data.products)) {
           backendProducts = data.products;
         }
 
-        // Normalize backend products to match frontend interface
         backendProducts = backendProducts.map((p: any) => ({
           id: p._id || p.id,
           name: p.name,
@@ -60,28 +56,20 @@ export default function ProductGrid({ onAddToCart, onViewAllClick, onViewProduct
           in_stock: p.in_stock !== undefined ? p.in_stock : true,
           featured: p.featured || false,
         }));
-
-        console.log('Normalized backend products:', backendProducts);
       } else {
         console.warn('Backend fetch failed:', res.status);
       }
 
-      // Combine backend and local products
       const combined = [...backendProducts, ...localProducts];
-      
-      // Filter for featured products
       const featured = combined.filter((p) => p.featured);
-      
-      // Deduplicate by slug (prefer backend products)
+
       const deduped = Array.from(
         new Map(featured.map((p) => [p.slug, p])).values()
       );
 
-      console.log('Final featured products:', deduped);
       setProducts(deduped);
     } catch (err) {
       console.error('Failed to load products', err);
-      // Fallback to local products only
       setProducts(localProducts.filter((p) => p.featured));
     } finally {
       setLoading(false);
@@ -172,16 +160,17 @@ export default function ProductGrid({ onAddToCart, onViewAllClick, onViewProduct
             </div>
           ))}
         </div>
-                {onViewAllClick && (
-          <div className="flex justify-center">
-            <button
-              onClick={onViewAllClick}
-              className="px-12 py-4 border border-white text-white tracking-widest font-light hover:bg-white hover:text-black transition-all duration-300"
-            >
-              VIEW ALL PRODUCTS
-            </button>
-          </div>
-        )}
+
+        {/* 🆕 VIEW MORE BUTTON */}
+       <div className="mt-16 text-center">
+    <button
+        onClick={() => navigate("/products")}
+        className="inline-block px-10 py-3 border border-zinc-700 text-white tracking-wider uppercase hover:bg-white hover:text-black transition-all duration-300"
+      >
+        View More
+      </button>
+    </div>
+
       </div>
     </section>
   );
