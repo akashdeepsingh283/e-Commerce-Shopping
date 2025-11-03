@@ -15,7 +15,7 @@ const collections = [
 
   { title: "NECKLACES", 
     category: "necklaces", 
-    image: "/collection/Necklace.jpg" },
+    image: "/collection/1.jpg" },
 
   { title: "EARRINGS", 
     category: "earrings", 
