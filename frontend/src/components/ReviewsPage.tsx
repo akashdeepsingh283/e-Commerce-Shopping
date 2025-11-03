@@ -53,6 +53,9 @@ export default function ReviewsPage({ onBack }: ReviewsPageProps) {
   const [submitting, setSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState('');
 
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+
+
   // Fetch and merge reviews from both backend and frontend
   const fetchAndMergeReviews = async () => {
     try {
@@ -61,7 +64,7 @@ export default function ReviewsPage({ onBack }: ReviewsPageProps) {
       
       // Try to fetch from backend
       try {
-        const response = await fetch(`http://localhost:5001/api/reviews?sortBy=${sortBy}`);
+        const response = await fetch(`${API_URL}/api/reviews?sortBy=${sortBy}`);
         if (response.ok) {
           const data = await response.json();
           backendReviews = data.filter((r: Review) => r.is_approved);
@@ -109,7 +112,7 @@ backendReviews.forEach(backendReview => {
       
       // Try to fetch from backend
       try {
-        const response = await fetch('http://localhost:5001/api/social-posts');
+        const response = await fetch(`${API_URL}/api/social-posts`);
         if (response.ok) {
           const data = await response.json();
           backendPosts = data.filter((p: SocialPost) => p.is_active);
@@ -148,7 +151,7 @@ backendReviews.forEach(backendReview => {
     setSubmitMessage('');
 
     try {
-      const response = await fetch('http://localhost:5001/api/reviews', {
+      const response = await fetch(`${API_URL}/api/reviews`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

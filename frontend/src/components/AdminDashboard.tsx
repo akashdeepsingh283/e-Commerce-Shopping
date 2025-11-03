@@ -37,6 +37,9 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
   const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
   const [orderItems, setOrderItems] = useState<{ [key: string]: OrderItem[] }>({});
 
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+
+
   useEffect(() => {
     fetchOrders();
   }, []);
@@ -44,7 +47,7 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
   const fetchOrders = async () => {
     setLoading(true);
     try {
-      const ordersRes = await fetch('http://localhost:5001/api/admin/orders', {
+      const ordersRes = await fetch(`${API_URL}/api/admin/orders`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -78,7 +81,7 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
     }
 
     try {
-      const res = await fetch(`http://localhost:5001/api/orders/${orderId}`);
+      const res = await fetch(`${API_URL}/api/orders/${orderId}`);
       if (res.ok) {
         const data = await res.json();
         setOrderItems(prev => ({ ...prev, [orderId]: data.items || [] }));
@@ -91,7 +94,7 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
 
   const handleUpdateOrderStatus = async (orderId: string, newStatus: string) => {
     try {
-      const res = await fetch(`http://localhost:5001/api/admin/orders/${orderId}`, {
+      const res = await fetch(`${API_URL}/api/admin/orders/${orderId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

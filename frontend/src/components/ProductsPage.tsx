@@ -54,6 +54,7 @@ export default function ProductsPage({
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
 
+  const API_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001';
   // Admin
   const ADMIN_EMAIL = 'akash@gmail.com';
   const isAdmin = user && user.email === ADMIN_EMAIL;
@@ -76,7 +77,7 @@ export default function ProductsPage({
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:5001/api/products');
+      const res = await fetch(`${API_URL}/api/products`);
       let backendProducts: Product[] = [];
 
       if (res.ok) {
@@ -137,7 +138,7 @@ export default function ProductsPage({
 
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`http://localhost:5001/api/admin/products/${productId}`, {
+      const res = await fetch(`${API_URL}/api/admin/products/${productId}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
       });

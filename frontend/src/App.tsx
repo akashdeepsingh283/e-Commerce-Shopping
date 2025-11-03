@@ -52,6 +52,9 @@ function App() {
   const [orderId, setOrderId] = useState<string | null>(null);
   const [showReviewPopup, setShowReviewPopup] = useState(false);
 
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+
+
   // Sync cart with backend when user logs in
   useEffect(() => {
     if (user) syncCartWithBackend();
@@ -61,7 +64,7 @@ function App() {
     try {
       const token = localStorage.getItem('token');
       if (!token) return;
-      const res = await fetch('http://localhost:5001/api/cart', {
+      const res = await fetch(`${API_URL}/api/cart`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) {
@@ -91,7 +94,7 @@ function App() {
     if (user) {
       try {
         const token = localStorage.getItem('token');
-        const res = await fetch('http://localhost:5001/api/cart/add', {
+        const res = await fetch(`${API_URL}/api/cart/add`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -128,7 +131,7 @@ function App() {
     if (user) {
       try {
         const token = localStorage.getItem('token');
-        const res = await fetch('http://localhost:5001/api/cart/update', {
+        const res = await fetch(`${API_URL}/api/cart/update`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -155,7 +158,7 @@ function App() {
     if (user) {
       try {
         const token = localStorage.getItem('token');
-        const res = await fetch('http://localhost:5001/api/cart/remove', {
+        const res = await fetch(`${API_URL}/api/cart/remove`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

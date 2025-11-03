@@ -26,6 +26,8 @@ export default function AdminReviewApproval({ onClose }: AdminReviewApprovalProp
   const [filter, setFilter] = useState<'all' | 'pending' | 'approved'>('pending');
   const [processingIds, setProcessingIds] = useState<Set<string>>(new Set());
   const [error, setError] = useState<string>('');
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+
 
   useEffect(() => {
     fetchReviews();
@@ -42,7 +44,7 @@ export default function AdminReviewApproval({ onClose }: AdminReviewApprovalProp
         return;
       }
 
-      const response = await fetch(`http://localhost:5001/api/admin/reviews?filter=${filter}`, {
+      const response = await fetch(`${API_URL}/api/admin/reviews?filter=${filter}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -57,7 +59,7 @@ export default function AdminReviewApproval({ onClose }: AdminReviewApprovalProp
           setAllReviews(data);
         } else if (allReviews.length === 0) {
           // If allReviews is empty, fetch all reviews separately for counts
-          const allResponse = await fetch(`http://localhost:5001/api/admin/reviews?filter=all`, {
+          const allResponse = await fetch(`${API_URL}/api/admin/reviews?filter=all`, {
             headers: {
               'Authorization': `Bearer ${token}`,
             },
@@ -84,7 +86,7 @@ export default function AdminReviewApproval({ onClose }: AdminReviewApprovalProp
     
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5001/api/admin/reviews/${reviewId}/approve`, {
+      const response = await fetch(`${API_URL}/api/admin/reviews/${reviewId}/approve`, {
         method: 'PATCH',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -131,7 +133,7 @@ export default function AdminReviewApproval({ onClose }: AdminReviewApprovalProp
     
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5001/api/admin/reviews/${reviewId}/reject`, {
+      const response = await fetch(`${API_URL}/api/admin/reviews/${reviewId}/reject`, {
         method: 'PATCH',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -177,7 +179,7 @@ export default function AdminReviewApproval({ onClose }: AdminReviewApprovalProp
     
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5001/api/admin/reviews/${reviewId}`, {
+      const response = await fetch(`${API_URL}/api/admin/reviews/${reviewId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,

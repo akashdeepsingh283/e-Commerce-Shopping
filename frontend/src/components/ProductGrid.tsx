@@ -26,6 +26,8 @@ export default function ProductGrid({ onAddToCart, onViewProduct }: ProductGridP
   const [loading, setLoading] = useState(true);
    const navigate = useNavigate();
 
+   const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+
   useEffect(() => {
     fetchProducts();
   }, []);
@@ -33,7 +35,7 @@ export default function ProductGrid({ onAddToCart, onViewProduct }: ProductGridP
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:5001/api/products?featured=true');
+      const res = await fetch(`${API_URL}/api/products?featured=true`);
       let backendProducts: Product[] = [];
 
       if (res.ok) {
