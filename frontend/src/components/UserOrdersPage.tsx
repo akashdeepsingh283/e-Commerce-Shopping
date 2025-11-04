@@ -40,6 +40,9 @@ export default function UserOrdersPage({ onBack }: UserOrdersPageProps) {
   const [orderItems, setOrderItems] = useState<{ [key: string]: OrderItem[] }>({});
   const [error, setError] = useState<string | null>(null);
 
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+
+
   useEffect(() => {
     fetchOrders();
   }, []);
@@ -55,7 +58,7 @@ export default function UserOrdersPage({ onBack }: UserOrdersPageProps) {
         return;
       }
 
-      const res = await fetch('http://localhost:5001/api/user/orders', {
+      const res = await fetch(`${API_URL}/api/user/orders`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -101,7 +104,7 @@ export default function UserOrdersPage({ onBack }: UserOrdersPageProps) {
 
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`http://localhost:5001/api/user/orders/${orderId}`, {
+      const res = await fetch(`${API_URL}/api/user/orders/${orderId}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }

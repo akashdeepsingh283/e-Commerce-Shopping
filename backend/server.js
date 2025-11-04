@@ -9,11 +9,15 @@ const PORT = process.env.PORT || 5001;
 
 // ✅ 1. CORS FIRST
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: [
+    'http://localhost:5173', // for local development
+    'https://e-commerce-shopping-delta.vercel.app', // ✅ your deployed frontend
+  ],
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'], 
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
 
 // ✅ 2. BODY PARSER (must come BEFORE any routes)
 app.use(express.json());

@@ -17,6 +17,9 @@ export default function ReviewPopup({ isOpen, onClose }: ReviewPopupProps) {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
 
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+
+
   if (!isOpen) return null;
 
   const handleSubmit = async () => {
@@ -34,7 +37,7 @@ export default function ReviewPopup({ isOpen, onClose }: ReviewPopupProps) {
     setMessage('');
 
     try {
-      const response = await fetch('http://localhost:5001/api/reviews', {
+      const response = await fetch(`${API_URL}/api/reviews`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

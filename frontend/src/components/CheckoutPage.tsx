@@ -26,6 +26,9 @@ export default function CheckoutPage({ items, onOrderComplete }: CheckoutPagePro
     country: 'India',
   });
 
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+
+
   useEffect(() => {
     const script = document.createElement('script');
     script.src = 'https://checkout.razorpay.com/v1/checkout.js';
@@ -53,7 +56,7 @@ export default function CheckoutPage({ items, onOrderComplete }: CheckoutPagePro
     setIsSubmitting(true);
 
     try {
-      const res = await fetch('http://localhost:5001/api/payment/order', {
+      const res = await fetch(`${API_URL}/api/payment/order`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ amount: total }),
@@ -69,7 +72,7 @@ export default function CheckoutPage({ items, onOrderComplete }: CheckoutPagePro
         description: 'Order Payment',
         order_id: order.id,
         handler: async function (response: any) {
-          const verifyRes = await fetch('http://localhost:5001/api/payment/verify', {
+          const verifyRes = await fetch(`${API_URL}/api/payment/verify`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(response),
@@ -91,7 +94,7 @@ export default function CheckoutPage({ items, onOrderComplete }: CheckoutPagePro
               })),
             };
 
-            const orderSaveRes = await fetch('http://localhost:5001/api/orders/', {
+            const orderSaveRes = await fetch(`${API_URL}/api/orders/`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
