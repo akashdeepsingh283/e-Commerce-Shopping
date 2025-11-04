@@ -7,7 +7,7 @@ const collections = [
 
   { title: "PEARL MALAS", 
     category: "pearl malas", 
-    image: "/collection/Mala.jpg" },
+    image: "/public/n1.jpg" },
 
   { title: "RINGS", 
     category: "rings", 
@@ -23,7 +23,7 @@ const collections = [
     
   { title: "PEARLS BRACELETS", 
     category: "pearls bracelets", 
-    image: "/collection/PearlBracelet.jpg" },
+    image: "/Bracelets/b1.jpg" },
 ];
 
 interface FeaturedCollectionsProps {
