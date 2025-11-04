@@ -163,7 +163,7 @@ export default function ProductGrid({ onAddToCart, onViewProduct }: ProductGridP
           ))}
         </div>
 
-        {/* 🆕 VIEW MORE BUTTON */}
+        {/*  VIEW MORE BUTTON */}
        <div className="mt-16 text-center">
     <button
         onClick={() => navigate("/products")}

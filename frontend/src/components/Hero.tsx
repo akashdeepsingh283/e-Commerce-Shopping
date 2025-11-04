@@ -52,11 +52,10 @@ export default function Hero() {
       {/* Hero content */}
       <div className="relative z-10 text-center px-4 animate-fade-in">
 
-       {/* LOGO WITH WHITE GLOW BEHIND */}
 <div className="relative inline-block mx-auto mb-6 animate-slide-up">
-  <div className="absolute inset-[-30px] rounded-full bg-white blur-[120px] opacity-80 animate-glow-white" />
+  <div className="absolute rounded-full bg-white blur-[120px] opacity-80 animate-glow-white" />
   <img
-    src="/Logo.png"
+    src="/Logo2.png"
     alt="NP Logo"
     className="relative mx-auto w-40 md:w-80"
   />
