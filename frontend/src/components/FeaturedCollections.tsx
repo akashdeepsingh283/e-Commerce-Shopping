@@ -7,7 +7,7 @@ const collections = [
 
   { title: "PEARL MALAS", 
     category: "pearl malas", 
-    image: "/public/n1.jpg" },
+    image: "/n1.jpg" },
 
   { title: "RINGS", 
     category: "rings", 
