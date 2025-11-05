@@ -70,12 +70,20 @@ export default function ReviewsPage({ onBack }: ReviewsPageProps) {
         console.log('Backend not available, using local data only');
       }
 
+<<<<<<< HEAD
+=======
+      // Merge backend and local reviews (remove duplicates by _id)
+>>>>>>> 6ae22b83dbf075dcf88e8bf68d2062eed67ad09b
       const mergedReviews = [...localReviews];
       backendReviews.forEach(backendReview => {
         if (!mergedReviews.some(r => r._id === backendReview._id)) {
           mergedReviews.push({
             ...backendReview,
+<<<<<<< HEAD
             image_url: backendReview.photo_url || '', 
+=======
+            image_url: backendReview.image_url || '', 
+>>>>>>> 6ae22b83dbf075dcf88e8bf68d2062eed67ad09b
           });
         }
       });
@@ -136,6 +144,26 @@ export default function ReviewsPage({ onBack }: ReviewsPageProps) {
     window.scrollTo(0, 0);
   }, [sortBy]);
 
+  useEffect(() => {
+    // Force all videos to pause when tab changes or component mounts
+    const pauseAllVideos = () => {
+      const vids = document.querySelectorAll('video');
+      vids.forEach((v) => {
+        v.pause();
+        v.currentTime = 0;
+      });
+    };
+
+    // Pause immediately
+    pauseAllVideos();
+
+    // Also pause after a short delay to catch any lazy-loaded videos
+    const timer = setTimeout(pauseAllVideos, 100);
+
+    return () => clearTimeout(timer);
+  }, [activeTab, socialPosts]);
+
+
   const handleSubmitReview = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
@@ -183,18 +211,54 @@ export default function ReviewsPage({ onBack }: ReviewsPageProps) {
   };
 
   const renderSocialEmbed = (post: SocialPost) => {
+<<<<<<< HEAD
+=======
+    // Check if embed_url is a local video file
+    const isLocalVideo = post.embed_url && (
+      post.embed_url.endsWith('.mp4') || 
+      post.embed_url.endsWith('.webm') || 
+      post.embed_url.startsWith('/review/')
+    );
+
+    // For Instagram Reels and TikTok videos
+>>>>>>> 6ae22b83dbf075dcf88e8bf68d2062eed67ad09b
     if (post.post_type === 'reel' || post.post_type === 'video') {
       return (
         <div key={post._id} className="bg-zinc-950 border border-zinc-800 overflow-hidden">
-          {post.embed_url ? (
-            <div className="aspect-[9/16] relative ">
+          {post.embed_url && isLocalVideo ? (
+            <div className="aspect-[9/16] relative">
+              <video
+                src={post.embed_url}
+                title={post.caption}
+                controls
+                preload="metadata"
+                playsInline
+                className="w-full h-full object-cover"
+                onLoadStart={(e) => {
+                  e.currentTarget.pause();
+                }}
+                onLoadedData={(e) => {
+                  e.currentTarget.pause();
+                }}
+                onCanPlay={(e) => {
+                  e.currentTarget.pause();
+                }}
+                ref={(el) => {
+                  if (el) {
+                    el.pause();
+                  }
+                }}
+              />
+            </div>
+          ) : post.embed_url ? (
+            <div className="aspect-[9/16] relative">
               <iframe
                 width="100%"
                 height="100%"
                 src={post.embed_url}
                 title={post.caption}
                 frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
                 className="w-full h-full"
               />
@@ -212,6 +276,7 @@ export default function ReviewsPage({ onBack }: ReviewsPageProps) {
             </div>
           ) : null}
           <div className="p-4">
+<<<<<<< HEAD
             <p className="text-white text-sm mb-3 line-clamp-2">{post.caption}</p>
             <div className="flex items-center space-x-4 text-zinc-500 text-sm">
               <div className="flex items-center space-x-1">
@@ -223,6 +288,11 @@ export default function ReviewsPage({ onBack }: ReviewsPageProps) {
                 <span>{post.comments}</span>
               </div>
             </div>
+=======
+            <p className="text-white text-sm mb-3 line-clamp-2">
+              {post.caption}
+            </p>
+>>>>>>> 6ae22b83dbf075dcf88e8bf68d2062eed67ad09b
           </div>
         </div>
       );
@@ -260,7 +330,30 @@ export default function ReviewsPage({ onBack }: ReviewsPageProps) {
     if (post.platform.toLowerCase() === 'youtube') {
       return (
         <div key={post._id} className="bg-zinc-950 border border-zinc-800 overflow-hidden">
-          {post.embed_url && (
+          {post.embed_url && isLocalVideo ? (
+            <div className="aspect-video">
+              <video
+                src={post.embed_url}
+                title={post.caption}
+                controls
+                preload="metadata"
+                playsInline
+                className="w-full h-full object-cover"
+                onLoadStart={(e) => {
+                  e.currentTarget.pause();
+                }}
+                onCanPlay={(e) => {
+                  e.currentTarget.pause();
+                }}
+                ref={(el) => {
+                  if (el) {
+                    el.pause();
+                    el.currentTime = 0;
+                  }
+                }}
+              />
+            </div>
+          ) : post.embed_url ? (
             <div className="aspect-video">
               <iframe
                 width="100%"
@@ -268,12 +361,12 @@ export default function ReviewsPage({ onBack }: ReviewsPageProps) {
                 src={post.embed_url}
                 title={post.caption}
                 frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
                 className="w-full h-full"
               />
             </div>
-          )}
+          ) : null}
           <div className="p-4">
             <p className="text-white text-sm mb-3 line-clamp-2">{post.caption}</p>
           </div>
