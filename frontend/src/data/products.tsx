@@ -95,8 +95,8 @@ export const localProducts = [
     mrp: 1199,
     category: 'earrings',
     images: [
-      '/images/products/celestial1.png',
-      '/images/products/celestial2.png',
+      '/public/Earrings/e1.jpg',
+      '/public/Rings/r2.jpg',
       '/public/c.jpg',
       '/public/c1.jpg',
     ],

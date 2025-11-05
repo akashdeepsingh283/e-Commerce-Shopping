@@ -97,8 +97,8 @@ export default function About({ onReviewsClick }: AboutProps) {
             </div>
           </div>
         </div>
-
         {/* Video Section */}
+<hr className="my-16 border-zinc-500" />
         <AboutVideo />
       </div>
     </section>
@@ -148,6 +148,9 @@ function AboutVideo() {
 
   return (
     <div className="relative group flex flex-col items-center mt-10">
+      <h2
+      className=" text-3xl font-light tracking-widest text-white mb-6">
+       <b> Our presence in media, Our brand has been featured in well-known news outlets such as...</b></h2>
       <video
         ref={videoRef}
         src="/review/about.mp4"
@@ -155,8 +158,8 @@ function AboutVideo() {
         loop
         muted
         playsInline
-        className="w-full max-w-xl rounded-xl shadow-xl object-cover border border-zinc-700"
-      />
+        className=""
+        />
 
       {/* Custom Controls */}
       <div className="flex items-center justify-between w-full max-w-xl mt-4 bg-zinc-900/80 backdrop-blur-sm p-3 rounded-xl border border-zinc-700 text-white">
@@ -177,7 +180,6 @@ function AboutVideo() {
         <button onClick={fullscreen} className="hover:text-zinc-300">
           <Maximize size={22} />
         </button>
-
         <button onClick={shareVideo} className="hover:text-zinc-300">
           <Share2 size={22} />
         </button>
