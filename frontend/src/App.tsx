@@ -54,8 +54,6 @@ function App() {
 
   const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
 
-
-  // Sync cart with backend when user logs in
   useEffect(() => {
     if (user) syncCartWithBackend();
   }, [user]);
@@ -82,7 +80,6 @@ function App() {
     }
   };
 
-  // Show review popup after login
   useEffect(() => {
     if (user) {
       const timer = setTimeout(() => setShowReviewPopup(true), 30000);
@@ -233,6 +230,7 @@ function App() {
         />
 
         <Route path="/contact" element={<ContactPage onBack={() => navigate('/')} />} />
+
         <Route
           path="/products"
           element={
@@ -244,8 +242,10 @@ function App() {
             />
           }
         />
+
         <Route path="/collections" element={<FeaturedCollections onCollectionClick={() => navigate('/products')} />} />
         <Route path="/about" element={<About onReviewsClick={() => navigate('/reviews')} />} />
+
         <Route
           path="/product-detail"
           element={
@@ -260,6 +260,7 @@ function App() {
             )
           }
         />
+
         <Route
           path="/checkout"
           element={
@@ -271,10 +272,13 @@ function App() {
             />
           }
         />
+
         <Route
           path="/order-confirmation"
           element={<OrderConfirmation orderId={orderId as string} onBackToHome={() => navigate('/')} />}
         />
+        
+      
         <Route path="/orders" element={<UserOrdersPage onBack={() => navigate('/')} />} />
         <Route path="/admin-dashboard" element={<AdminDashboard onClose={() => navigate('/')} />} />
         <Route path="/reviews" element={<ReviewsPage onBack={() => navigate('/')} />} />

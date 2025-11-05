@@ -30,7 +30,7 @@ export default function Navbar(props: NavbarProps) {
     cartCount,
     onCartClick,
     onAuthClick,
-
+    onHomeClick,
     onAdminAddProduct,
     onAdminDashboardClick,
     onOrdersClick,
@@ -54,28 +54,23 @@ export default function Navbar(props: NavbarProps) {
 
   const isAdmin = user?.email === 'akash@gmail.com' || user?.email === 'admin@sainamanpearls.com';
 
-  return (
+   return (
     <nav
       className={`fixed top-0 w-full z-50 transition-all duration-500 ${
-        isScrolled ? 'bg-black/95 backdrop-blur-sm py-3' : 'bg-transparent py-5'
+        isScrolled ? 'bg-black/95 backdrop-blur-sm py-4' : 'bg-transparent py-6'
       }`}
+
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between">
-          
-          {/*  Logo */}
-          <Link to="/" className="flex items-center space-x-3">
-            <img
-              src="/Logo2.png"
-              alt="SAI NAMAN PEARLS"
-              className="h-9 w-auto object-contain md:hidden"
-            />
-            <span className="hidden md:block text-xl font-light tracking-widest text-white">
+        <div className="flex items-center justify-between ">
+          {/* Logo */}
+          <button onClick={onHomeClick} className="flex items-center space-x-3">
+            <div className="text-2xl font-light tracking-widest text-white">
               SAI NAMAN PEARLS
-            </span>
-          </Link>
+            </div>
+          </button>
 
-          {/*  Desktop Navigation */}
+          {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-12">
             <Link to="/" className="text-zinc-400 hover:text-white transition-colors tracking-wide">HOME</Link>
             <Link to="/collections" className="text-zinc-400 hover:text-white transition-colors tracking-wide">COLLECTIONS</Link>
@@ -85,7 +80,7 @@ export default function Navbar(props: NavbarProps) {
             <Link to="/reviews" className="text-zinc-400 hover:text-white transition-colors tracking-wide">REVIEWS</Link>
           </div>
 
-          {/*  Right Icons */}
+          {/* Right Side Icons */}
           <div className="flex items-center space-x-6">
             {/* Cart */}
             <button onClick={onCartClick} className="relative text-zinc-400 hover:text-white transition-colors">
@@ -97,7 +92,7 @@ export default function Navbar(props: NavbarProps) {
               )}
             </button>
 
-            {/* User */}
+            {/* User Menu */}
             {user ? (
               <div className="relative">
                 <button onClick={() => setIsUserMenuOpen(!isUserMenuOpen)} className="flex items-center space-x-2 text-zinc-400 hover:text-white transition-colors">
@@ -109,19 +104,17 @@ export default function Navbar(props: NavbarProps) {
                   <>
                     <div className="fixed inset-0 z-40" onClick={() => setIsUserMenuOpen(false)} />
                     <div className="absolute right-0 mt-2 w-64 bg-zinc-950 border border-zinc-800 shadow-xl z-50">
-                      
                       <div className="p-4 border-b border-zinc-800">
                         <p className="text-white font-light tracking-wider">{user.name}</p>
                         <p className="text-zinc-500 text-sm">{user.email}</p>
                       </div>
 
                       <div className="py-2">
-                        <button onClick={() => { onOrdersClick(); setIsUserMenuOpen(false); }}
-                          className="w-full px-4 py-3 flex items-center space-x-3 text-zinc-400 hover:text-white hover:bg-zinc-900 transition-colors">
-                          <Package className="w-4 h-4" /><span className="tracking-wider text-sm">MY ORDERS</span>
+                        <button onClick={() => { onOrdersClick(); setIsUserMenuOpen(false); }} className="w-full px-4 py-3 text-left text-zinc-400 hover:text-white hover:bg-zinc-900 transition-colors flex items-center space-x-3">
+                          <Package className="w-4 h-4" />
+                          <span className="tracking-wider text-sm">MY ORDERS</span>
                         </button>
 
-                        {/* Admin Options Kept Intact */}
                         {isAdmin && (
                           <>
                             <div className="border-t border-zinc-800 my-2" />
@@ -150,9 +143,9 @@ export default function Navbar(props: NavbarProps) {
                         )}
 
                         <div className="border-t border-zinc-800 my-2" />
-                        <button onClick={() => { onLogout(); setIsUserMenuOpen(false); }}
-                          className="w-full px-4 py-3 flex items-center space-x-3 text-red-400 hover:text-red-300 hover:bg-zinc-900 transition-colors">
-                          <LogOut className="w-4 h-4" /><span className="tracking-wider text-sm">LOGOUT</span>
+                        <button onClick={() => { onLogout(); setIsUserMenuOpen(false); }} className="w-full px-4 py-3 text-left text-red-400 hover:text-red-300 hover:bg-zinc-900 transition-colors flex items-center space-x-3">
+                          <LogOut className="w-4 h-4" />
+                          <span className="tracking-wider text-sm">LOGOUT</span>
                         </button>
                       </div>
                     </div>
@@ -165,7 +158,7 @@ export default function Navbar(props: NavbarProps) {
               </button>
             )}
 
-            {/*  Mobile Menu Toggle */}
+            {/* Mobile Menu Button */}
             <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="md:hidden text-zinc-400 hover:text-white transition-colors">
               {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -173,7 +166,7 @@ export default function Navbar(props: NavbarProps) {
         </div>
       </div>
 
-      {/*  Mobile Menu */}
+      {/* Mobile Menu */}
       {isMenuOpen && (
         <div className="md:hidden bg-zinc-950 border-t border-zinc-900">
           <div className="px-4 py-6 space-y-4">

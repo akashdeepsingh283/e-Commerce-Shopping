@@ -46,11 +46,10 @@ export default function Hero() {
       {/* Ambient floating blobs */}
       <div className="absolute inset-0 opacity-20">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-slate-800 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-gray-700 rounded-full blur-3xl animate-pulse delay-1000" />
       </div>
 
       {/* Hero content */}
-      <div className="relative z-10 text-center px-4 animate-fade-in">
+      <div className="relative z-10 text-center px-4">
 
 <div className="relative inline-block mx-auto mb-6 animate-slide-up">
   <div className="absolute rounded-full bg-white blur-[120px] opacity-80 animate-glow-white" />
