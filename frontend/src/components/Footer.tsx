@@ -60,9 +60,9 @@ export default function Footer({ onContactClick }: FooterProps) {
                   </button>
                 </li>
                 <li>
-                  <a href="#" className="text-zinc-400 hover:text-white transition-colors text-sm">
+                  <button onClick={onContactClick} className="text-zinc-400 hover:text-white transition-colors text-sm">              
                     Shipping & Returns
-                  </a>
+                  </button>
                 </li>
                 <li>
                   <button onClick={onContactClick} className="text-zinc-400 hover:text-white transition-colors text-sm">              

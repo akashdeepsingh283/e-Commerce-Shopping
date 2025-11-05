@@ -78,10 +78,10 @@ export default function Navbar(props: NavbarProps) {
           {/*  Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-12">
             <Link to="/" className="text-zinc-400 hover:text-white transition-colors tracking-wide">HOME</Link>
-            <Link to="/products" className="text-zinc-400 hover:text-white transition-colors tracking-wide">PRODUCTS</Link>
             <Link to="/collections" className="text-zinc-400 hover:text-white transition-colors tracking-wide">COLLECTIONS</Link>
-            <Link to="/about" className="text-zinc-400 hover:text-white transition-colors tracking-wide">ABOUT</Link>
+            <Link to="/products" className="text-zinc-400 hover:text-white transition-colors tracking-wide">PRODUCTS</Link>
             <Link to="/contact" className="text-zinc-400 hover:text-white transition-colors tracking-wide">CONTACT</Link>
+            <Link to="/about" className="text-zinc-400 hover:text-white transition-colors tracking-wide">ABOUT</Link>
           </div>
 
           {/*  Right Icons */}
@@ -177,10 +177,10 @@ export default function Navbar(props: NavbarProps) {
         <div className="md:hidden bg-zinc-950 border-t border-zinc-900">
           <div className="px-4 py-6 space-y-4">
             <Link to="/" onClick={() => setIsMenuOpen(false)} className="block w-full text-left text-zinc-400 hover:text-white transition-colors tracking-wider text-sm">HOME</Link>
-            <Link to="/products" onClick={() => setIsMenuOpen(false)} className="block w-full text-left text-zinc-400 hover:text-white transition-colors tracking-wider text-sm">PRODUCTS</Link>
             <Link to="/collections" onClick={() => setIsMenuOpen(false)} className="block w-full text-left text-zinc-400 hover:text-white transition-colors tracking-wider text-sm">COLLECTIONS</Link>
-            <Link to="/about" onClick={() => setIsMenuOpen(false)} className="block w-full text-left text-zinc-400 hover:text-white transition-colors tracking-wider text-sm">ABOUT</Link>
+            <Link to="/products" onClick={() => setIsMenuOpen(false)} className="block w-full text-left text-zinc-400 hover:text-white transition-colors tracking-wider text-sm">PRODUCTS</Link>
             <Link to="/contact" onClick={() => setIsMenuOpen(false)} className="block w-full text-left text-zinc-400 hover:text-white transition-colors tracking-wider text-sm">CONTACT</Link>
+            <Link to="/about" onClick={() => setIsMenuOpen(false)} className="block w-full text-left text-zinc-400 hover:text-white transition-colors tracking-wider text-sm">ABOUT</Link>
           </div>
         </div>
       )}
