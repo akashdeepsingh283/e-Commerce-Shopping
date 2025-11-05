@@ -7,12 +7,25 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 5001;
 
+
+
 // ✅ 1. CORS FIRST
 app.use(cors({
   origin: [
     'http://localhost:5173', // for local development
     'https://e-commerce-shopping-delta.vercel.app', 
     'https://e-commerce-shopping-5y9f.vercel.app',// ✅ your deployed frontend
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+app.options('*', cors({
+  origin: [
+    'http://localhost:5173',
+    'https://e-commerce-shopping-delta.vercel.app',
+    'https://e-commerce-shopping-5y9f.vercel.app'
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
