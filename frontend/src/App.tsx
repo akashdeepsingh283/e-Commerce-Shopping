@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
+
 import ProductGrid from './components/ProductGrid';
 import FeaturedCollections from './components/FeaturedCollections';
 import About from './components/About';
@@ -21,6 +22,7 @@ import UserOrdersPage from './components/UserOrdersPage';
 import AdminDashboard from './components/AdminDashboard';
 import ReviewsPage from './components/ReviewsPage';
 import AdminReviewApproval from './components/AdminReviewApproval';
+import ReviewsSection from './components/ReviewsSection';
 import { useAuth } from './context/AuthContext';
 
 interface Product {
@@ -49,7 +51,7 @@ function App() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [selectedProductSlug, setSelectedProductSlug] = useState<string | null>(null);
   const [orderId, setOrderId] = useState<string | null>(null);
-  const [showReviewPopup, setShowReviewPopup] = useState(false);
+  
 
   const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
 
@@ -79,12 +81,6 @@ function App() {
     }
   };
 
-  useEffect(() => {
-    if (user) {
-      const timer = setTimeout(() => setShowReviewPopup(true), 30000);
-      return () => clearTimeout(timer);
-    }
-  }, [user]);
 
   const handleAddToCart = async (product: Product) => {
     if (user) {
@@ -223,6 +219,7 @@ function App() {
               <FeaturedCollections onCollectionClick={() => navigate('/products')} />
               <ProductGrid onAddToCart={handleAddToCart} onViewProduct={handleViewProduct} />
               <About onReviewsClick={() => navigate('/reviews')} />
+              <ReviewsSection onViewAllClick={() => navigate('/reviews')} />
               <Footer onContactClick={() => navigate('/contact')} />
             </>
           }
@@ -242,7 +239,11 @@ function App() {
           }
         />
 
-        <Route path="/collections" element={<FeaturedCollections onCollectionClick={() => navigate('/products')} />} />
+        <Route
+          path="/collections"
+          element={<FeaturedCollections onCollectionClick={() => navigate('/products')} />}
+        />
+
         <Route path="/about" element={<About onReviewsClick={() => navigate('/reviews')} />} />
 
         <Route
@@ -276,8 +277,7 @@ function App() {
           path="/order-confirmation"
           element={<OrderConfirmation orderId={orderId as string} onBackToHome={() => navigate('/')} />}
         />
-        
-      
+
         <Route path="/orders" element={<UserOrdersPage onBack={() => navigate('/')} />} />
         <Route path="/admin-dashboard" element={<AdminDashboard onClose={() => navigate('/')} />} />
         <Route path="/reviews" element={<ReviewsPage onBack={() => navigate('/')} />} />
@@ -297,9 +297,7 @@ function App() {
       <AdminProductForm isOpen={isAdminProductFormOpen} onClose={() => setIsAdminProductFormOpen(false)} />
       <AdminCollectionForm isOpen={isAdminCollectionFormOpen} onClose={() => setIsAdminCollectionFormOpen(false)} />
 
-      {showReviewPopup && (
-        <ReviewPopup isOpen={showReviewPopup} onClose={() => setShowReviewPopup(false)} />
-      )}
+     
     </div>
   );
 }
