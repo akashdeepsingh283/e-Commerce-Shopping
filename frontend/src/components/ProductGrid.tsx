@@ -3,7 +3,7 @@ import { ShoppingBag } from 'lucide-react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { localProducts } from '../data/products';
-import { useNavigate } from 'react-router-dom';
+
 
 interface Product {
   id: string;
@@ -26,7 +26,7 @@ export default function ProductGrid({ onAddToCart, onViewProduct }: ProductGridP
   const [loading, setLoading] = useState(true);
   const [showAll, setShowAll] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 640);
-  const navigate = useNavigate();
+ 
 
   const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
 
