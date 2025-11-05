@@ -24,9 +24,18 @@ interface ProductGridProps {
 export default function ProductGrid({ onAddToCart, onViewProduct }: ProductGridProps) {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showAll, setShowAll] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 640);
   const navigate = useNavigate();
 
   const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+
+  // 📱 Detect screen size change
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 640);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     fetchProducts();
@@ -73,13 +82,16 @@ export default function ProductGrid({ onAddToCart, onViewProduct }: ProductGridP
   const handleAddToCart = (product: Product, e: React.MouseEvent) => {
     e.stopPropagation();
     onAddToCart(product);
-
     toast.success(`${product.name} added to your bag!`, {
       position: 'top-right',
       autoClose: 2000,
       theme: 'dark',
     });
   };
+
+  // 📦 How many products to show initially
+  const visibleCount = isMobile ? 4 : 6;
+  const visibleProducts = showAll ? products : products.slice(0, visibleCount);
 
   if (loading) {
     return (
@@ -99,18 +111,16 @@ export default function ProductGrid({ onAddToCart, onViewProduct }: ProductGridP
             FEATURED PIECES
           </h2>
           <p className="text-zinc-400 tracking-wide">
-            Check Out Our Customer Favorites- Best Sellers!
+            Check Out Our Customer Favorites — Best Sellers!
           </p>
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8">
-          {products.map((product, index) => (
+          {visibleProducts.map((product, index) => (
             <div
               key={product.id}
               className="group relative bg-black border border-zinc-800 overflow-hidden hover:border-zinc-600 transition-all duration-500"
-              style={{
-                animation: `fade-in-up 0.8s ease-out ${index * 0.1}s both`,
-              }}
+              style={{ animation: `fade-in-up 0.8s ease-out ${index * 0.1}s both` }}
             >
               <div
                 className="relative aspect-square overflow-hidden cursor-pointer"
@@ -152,16 +162,20 @@ export default function ProductGrid({ onAddToCart, onViewProduct }: ProductGridP
           ))}
         </div>
 
-        {/*  VIEW MORE BUTTON */}
+        {/* 👇 VIEW MORE / LESS BUTTON */}
         <div className="mt-16 text-center">
-          <button
-            onClick={() => navigate("/products")}
-            className="inline-block px-10 py-3 border border-zinc-700 text-white tracking-wider uppercase hover:bg-white hover:text-black transition-all duration-300"
-          >
-            View More
-          </button>
+          {products.length > visibleCount && (
+            <button
+              onClick={() => {
+                setShowAll(!showAll);
+               // if (showAll) window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className="inline-block px-10 py-3 border border-zinc-700 text-white tracking-wider uppercase hover:bg-white hover:text-black transition-all duration-300"
+            >
+              {showAll ? 'View Less' : 'View More'}
+            </button>
+          )}
         </div>
-
       </div>
     </section>
   );
