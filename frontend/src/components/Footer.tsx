@@ -1,4 +1,4 @@
-import { Instagram, Facebook, Twitter, Phone, Mail, MapPin } from 'lucide-react';
+import { Instagram, Facebook, Phone, Mail, MapPin } from 'lucide-react';
 
 interface FooterProps {
   onContactClick: () => void;
