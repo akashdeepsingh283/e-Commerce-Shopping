@@ -102,6 +102,20 @@ export default function Footer({ onContactClick }: FooterProps) {
                   </p>
                   </div>
                 </div>
+                <div className="flex items-start space-x-3">
+                  <MapPin className="w-4 h-4 text-zinc-600 mt-1 flex-shrink-0" />
+                  <div className="text-sm">
+                     <p className="text-zinc-400">
+                    Sai Naman Pearls
+                    <br />
+                    3rd Floor,
+                    <br />
+                    Aditya Park Hotel Lobby,
+                    <br />
+                    Ameerpet Hyderabad, Telangana 500038.
+                  </p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

@@ -178,7 +178,6 @@ export default function ContactPage({ onBack }: ContactPageProps) {
                   <h3 className="text-white font-light tracking-wider mb-2">
                     EMAIL US
                   </h3>
-                  <p className="text-zinc-400">support@noir.com</p>
                   <p className="text-zinc-400">sainamanpearls1@gmail.com</p>
                 </div>
               </div>
@@ -232,7 +231,7 @@ export default function ContactPage({ onBack }: ContactPageProps) {
                 </div>
                 <div className="flex justify-between">
                   <span>Sunday</span>
-                  <span>12:00 PM - 5:00 PM</span>
+                  <span>11:00 PM - 6:00 PM</span>
                 </div>
               </div>
             </div>

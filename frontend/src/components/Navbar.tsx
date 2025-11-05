@@ -77,7 +77,6 @@ export default function Navbar(props: NavbarProps) {
             <Link to="/products" className="text-zinc-400 hover:text-white transition-colors tracking-wide">PRODUCTS</Link>
             <Link to="/contact" className="text-zinc-400 hover:text-white transition-colors tracking-wide">CONTACT</Link>
             <Link to="/about" className="text-zinc-400 hover:text-white transition-colors tracking-wide">ABOUT</Link>
-            <Link to="/reviews" className="text-zinc-400 hover:text-white transition-colors tracking-wide">REVIEWS</Link>
           </div>
 
           {/* Right Side Icons */}

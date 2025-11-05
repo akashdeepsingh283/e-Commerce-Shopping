@@ -59,6 +59,7 @@ export default function ReviewsSection({ onViewAllClick }: ReviewsSectionProps) 
 
   return (
     <section className="py-16 bg-black relative">
+      <hr className="my-16 border-zinc-500" />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-4xl sm:text-5xl font-extralight tracking-widest text-white mb-2">
@@ -183,16 +184,16 @@ export default function ReviewsSection({ onViewAllClick }: ReviewsSectionProps) 
           </div>
         )}
       </div>
-
       <style>{`
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
+        
         @keyframes fade-in-up {
           from { opacity: 0; transform: translateY(20px); }
           to { opacity: 1; transform: translateY(0); }
-        }
-      `}</style>
+          }
+          `}</style>
+          <hr className="my-16 border-zinc-500" />
     </section>
   );
 }
