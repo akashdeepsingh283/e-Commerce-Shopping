@@ -31,7 +31,7 @@ export const localProducts = [
     mrp: 1799,
     category: 'bracelets',
     images: [
-      '/images/products/heirloom1.png',
+      '/public/Bracelets/b2.jpg',
       '/images/products/heirloom2.png',
       '/public/c.jpg',
       '/public/c1.jpg',
@@ -51,8 +51,7 @@ export const localProducts = [
     mrp: 1499,
     category: 'rings',
     images: [
-      '/images/products/luna1.png',
-      '/images/products/luna2.png',
+      '/public/Rings/r1.jpg',
       '/public/c.jpg',
       '/public/c1.jpg',
 
@@ -73,9 +72,8 @@ export const localProducts = [
     mrp: 5500,
     Category: 'necklaces',
     images: [
-      '/images/products/signature1.png',
-      '/images/products/signature2.png',
-      '/images/products/signature3.png',
+      '/public/Necklace/n2.jpg',
+      '/public/Necklace/n1.jpg',
       '/public/c.jpg',
       '/public/c1.jpg',
     ],
