@@ -82,6 +82,7 @@ export default function Navbar(props: NavbarProps) {
             <Link to="/products" className="text-zinc-400 hover:text-white transition-colors tracking-wide">PRODUCTS</Link>
             <Link to="/contact" className="text-zinc-400 hover:text-white transition-colors tracking-wide">CONTACT</Link>
             <Link to="/about" className="text-zinc-400 hover:text-white transition-colors tracking-wide">ABOUT</Link>
+            <Link to="/reviews" className="text-zinc-400 hover:text-white transition-colors tracking-wide">REVIEWS</Link>
           </div>
 
           {/*  Right Icons */}
@@ -181,6 +182,7 @@ export default function Navbar(props: NavbarProps) {
             <Link to="/products" onClick={() => setIsMenuOpen(false)} className="block w-full text-left text-zinc-400 hover:text-white transition-colors tracking-wider text-sm">PRODUCTS</Link>
             <Link to="/contact" onClick={() => setIsMenuOpen(false)} className="block w-full text-left text-zinc-400 hover:text-white transition-colors tracking-wider text-sm">CONTACT</Link>
             <Link to="/about" onClick={() => setIsMenuOpen(false)} className="block w-full text-left text-zinc-400 hover:text-white transition-colors tracking-wider text-sm">ABOUT</Link>
+            <Link to="/reviews" onClick={() => setIsMenuOpen(false)} className="block w-full text-left text-zinc-400 hover:text-white transition-colors tracking-wider text-sm">REVIEWS</Link>
           </div>
         </div>
       )}

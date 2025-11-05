@@ -74,15 +74,15 @@ export default function ReviewsPage({ onBack }: ReviewsPageProps) {
       }
 
       // Merge backend and local reviews (remove duplicates by _id)
-     const mergedReviews = [...localReviews];
-backendReviews.forEach(backendReview => {
-  if (!mergedReviews.some(r => r._id === backendReview._id)) {
-    mergedReviews.push({
-      ...backendReview,
-      image_url: backendReview.image_url || '', 
-    });
-  }
-});
+      const mergedReviews = [...localReviews];
+      backendReviews.forEach(backendReview => {
+        if (!mergedReviews.some(r => r._id === backendReview._id)) {
+          mergedReviews.push({
+            ...backendReview,
+            image_url: backendReview.image_url || '', 
+          });
+        }
+      });
 
       // Apply sorting
       let sortedReviews = [...mergedReviews];
@@ -145,6 +145,26 @@ backendReviews.forEach(backendReview => {
     window.scrollTo(0, 0);
   }, [sortBy]);
 
+  useEffect(() => {
+    // Force all videos to pause when tab changes or component mounts
+    const pauseAllVideos = () => {
+      const vids = document.querySelectorAll('video');
+      vids.forEach((v) => {
+        v.pause();
+        v.currentTime = 0;
+      });
+    };
+
+    // Pause immediately
+    pauseAllVideos();
+
+    // Also pause after a short delay to catch any lazy-loaded videos
+    const timer = setTimeout(pauseAllVideos, 100);
+
+    return () => clearTimeout(timer);
+  }, [activeTab, socialPosts]);
+
+
   const handleSubmitReview = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
@@ -197,19 +217,51 @@ backendReviews.forEach(backendReview => {
   };
 
   const renderSocialEmbed = (post: SocialPost) => {
+    // Check if embed_url is a local video file
+    const isLocalVideo = post.embed_url && (
+      post.embed_url.endsWith('.mp4') || 
+      post.embed_url.endsWith('.webm') || 
+      post.embed_url.startsWith('/review/')
+    );
+
     // For Instagram Reels and TikTok videos
     if (post.post_type === 'reel' || post.post_type === 'video') {
       return (
         <div key={post._id} className="bg-zinc-950 border border-zinc-800 overflow-hidden">
-          {post.embed_url ? (
-            <div className="aspect-[9/16] relative ">
+          {post.embed_url && isLocalVideo ? (
+            <div className="aspect-[9/16] relative">
+              <video
+                src={post.embed_url}
+                title={post.caption}
+                controls
+                preload="metadata"
+                playsInline
+                className="w-full h-full object-cover"
+                onLoadStart={(e) => {
+                  e.currentTarget.pause();
+                }}
+                onLoadedData={(e) => {
+                  e.currentTarget.pause();
+                }}
+                onCanPlay={(e) => {
+                  e.currentTarget.pause();
+                }}
+                ref={(el) => {
+                  if (el) {
+                    el.pause();
+                  }
+                }}
+              />
+            </div>
+          ) : post.embed_url ? (
+            <div className="aspect-[9/16] relative">
               <iframe
                 width="100%"
                 height="100%"
                 src={post.embed_url}
                 title={post.caption}
                 frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
                 className="w-full h-full"
               />
@@ -230,16 +282,6 @@ backendReviews.forEach(backendReview => {
             <p className="text-white text-sm mb-3 line-clamp-2">
               {post.caption}
             </p>
-            <div className="flex items-center space-x-4 text-zinc-500 text-sm">
-              <div className="flex items-center space-x-1">
-                <Heart className="w-4 h-4" />
-                <span>{post.likes.toLocaleString()}</span>
-              </div>
-              <div className="flex items-center space-x-1">
-                <MessageCircle className="w-4 h-4" />
-                <span>{post.comments}</span>
-              </div>
-            </div>
           </div>
         </div>
       );
@@ -281,7 +323,30 @@ backendReviews.forEach(backendReview => {
     if (post.platform.toLowerCase() === 'youtube') {
       return (
         <div key={post._id} className="bg-zinc-950 border border-zinc-800 overflow-hidden">
-          {post.embed_url && (
+          {post.embed_url && isLocalVideo ? (
+            <div className="aspect-video">
+              <video
+                src={post.embed_url}
+                title={post.caption}
+                controls
+                preload="metadata"
+                playsInline
+                className="w-full h-full object-cover"
+                onLoadStart={(e) => {
+                  e.currentTarget.pause();
+                }}
+                onCanPlay={(e) => {
+                  e.currentTarget.pause();
+                }}
+                ref={(el) => {
+                  if (el) {
+                    el.pause();
+                    el.currentTime = 0;
+                  }
+                }}
+              />
+            </div>
+          ) : post.embed_url ? (
             <div className="aspect-video">
               <iframe
                 width="100%"
@@ -289,12 +354,12 @@ backendReviews.forEach(backendReview => {
                 src={post.embed_url}
                 title={post.caption}
                 frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
                 className="w-full h-full"
               />
             </div>
-          )}
+          ) : null}
           <div className="p-4">
             <p className="text-white text-sm mb-3 line-clamp-2">
               {post.caption}
