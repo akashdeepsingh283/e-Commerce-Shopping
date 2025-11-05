@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { X,  Plus, Minus } from 'lucide-react';
+import { X, Plus, Minus } from 'lucide-react';
 
 interface AdminProductFormProps {
   isOpen: boolean;
@@ -15,7 +15,7 @@ export default function AdminProductForm({ isOpen, onClose, onSuccess }: AdminPr
   const [success, setSuccess] = useState('');
   const [categories, setCategories] = useState<any[]>([]);
   const [collections, setCollections] = useState<any[]>([]);
-  
+
   const [formData, setFormData] = useState({
     name: '',
     slug: '',
@@ -60,10 +60,12 @@ export default function AdminProductForm({ isOpen, onClose, onSuccess }: AdminPr
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
     const { name, value, type } = e.target;
     const checked = (e.target as HTMLInputElement).checked;
-    
+
     setFormData({
       ...formData,
       [name]: type === 'checkbox' ? checked : value,
@@ -93,6 +95,38 @@ export default function AdminProductForm({ isOpen, onClose, onSuccess }: AdminPr
     setFormData({ ...formData, slug });
   };
 
+  // ------------------ CLOUDINARY UPLOAD ------------------
+  const handleImageUpload = async (file: File, index: number) => {
+    try {
+      setLoading(true);
+      setError('');
+
+      // Get signed signature from backend
+      const sigRes = await fetch(`${API_BASE}/api/get-signature`, { method: 'POST' });
+      const sigData = await sigRes.json();
+
+      const form = new FormData();
+      form.append('file', file);
+      form.append('api_key', sigData.apiKey);
+      form.append('timestamp', sigData.timestamp.toString());
+      form.append('signature', sigData.signature);
+
+      const cloudRes = await fetch(
+        `https://api.cloudinary.com/v1_1/${sigData.cloudName}/upload`,
+        { method: 'POST', body: form }
+      );
+
+      const cloudData = await cloudRes.json();
+      handleArrayChange(index, cloudData.secure_url, 'images');
+    } catch (err) {
+      console.error('Image upload failed', err);
+      setError('Failed to upload image');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ------------------ FORM SUBMIT ------------------
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -105,7 +139,6 @@ export default function AdminProductForm({ isOpen, onClose, onSuccess }: AdminPr
         throw new Error('Not authenticated');
       }
 
-      // Clean up data
       const productData = {
         name: formData.name,
         slug: formData.slug,
@@ -113,8 +146,8 @@ export default function AdminProductForm({ isOpen, onClose, onSuccess }: AdminPr
         price: parseFloat(formData.price),
         category_id: formData.category_id || null,
         collection_id: formData.collection_id || null,
-        images: formData.images.filter(img => img.trim() !== ''),
-        materials: formData.materials.filter(mat => mat.trim() !== ''),
+        images: formData.images.filter((img) => img.trim() !== ''),
+        materials: formData.materials.filter((mat) => mat.trim() !== ''),
         in_stock: formData.in_stock,
         featured: formData.featured,
       };
@@ -123,19 +156,19 @@ export default function AdminProductForm({ isOpen, onClose, onSuccess }: AdminPr
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(productData),
       });
 
       const data = await res.json();
-      
+
       if (!res.ok) {
         throw new Error(data.message || 'Failed to create product');
       }
 
       setSuccess('Product created successfully!');
-      
+
       // Reset form
       setFormData({
         name: '',
@@ -176,7 +209,10 @@ export default function AdminProductForm({ isOpen, onClose, onSuccess }: AdminPr
             <h2 className="text-3xl font-light tracking-widest text-white">
               ADD PRODUCT
             </h2>
-            <button onClick={onClose} className="text-zinc-400 hover:text-white transition-colors">
+            <button
+              onClick={onClose}
+              className="text-zinc-400 hover:text-white transition-colors"
+            >
               <X className="w-6 h-6" />
             </button>
           </div>
@@ -314,7 +350,7 @@ export default function AdminProductForm({ isOpen, onClose, onSuccess }: AdminPr
                 IMAGE URLS
               </label>
               {formData.images.map((image, index) => (
-                <div key={index} className="flex gap-2 mb-2">
+                <div key={index} className="flex gap-2 mb-2 items-center">
                   <input
                     type="url"
                     value={image}
@@ -322,6 +358,21 @@ export default function AdminProductForm({ isOpen, onClose, onSuccess }: AdminPr
                     className="flex-1 bg-black border border-zinc-800 px-4 py-3 text-white focus:border-white focus:outline-none transition-colors"
                     placeholder="https://example.com/image.jpg"
                   />
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) =>
+                      e.target.files && handleImageUpload(e.target.files[0], index)
+                    }
+                    className="text-sm text-white"
+                  />
+                  {image && (
+                    <img
+                      src={image}
+                      alt="Preview"
+                      className="w-16 h-16 object-cover rounded"
+                    />
+                  )}
                   {formData.images.length > 1 && (
                     <button
                       type="button"

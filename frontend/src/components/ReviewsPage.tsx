@@ -1,8 +1,7 @@
-// ReviewsPage.tsx (Enhanced with backend + frontend data merging)
+// ReviewsPage.tsx (Enhanced with Cloudinary image upload)
 import { useEffect, useState } from 'react';
 import { Star, Heart, MessageCircle, Instagram, Tv2, Youtube, Play } from 'lucide-react';
 import { localReviews, localSocialPosts } from '../data/reviewsAndSocialPosts'
-
 
 interface Review {
   _id: string;
@@ -15,7 +14,7 @@ interface Review {
   verified_purchase: boolean;
   is_approved: boolean;
   created_at: string;
-  image_url?: string;
+  photo_url?: string;
 }
 
 interface SocialPost {
@@ -55,14 +54,12 @@ export default function ReviewsPage({ onBack }: ReviewsPageProps) {
 
   const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
 
-
   // Fetch and merge reviews from both backend and frontend
   const fetchAndMergeReviews = async () => {
     try {
       setLoading(true);
       let backendReviews: Review[] = [];
       
-      // Try to fetch from backend
       try {
         const response = await fetch(`${API_URL}/api/reviews?sortBy=${sortBy}`);
         if (response.ok) {
@@ -73,18 +70,16 @@ export default function ReviewsPage({ onBack }: ReviewsPageProps) {
         console.log('Backend not available, using local data only');
       }
 
-      // Merge backend and local reviews (remove duplicates by _id)
-     const mergedReviews = [...localReviews];
-backendReviews.forEach(backendReview => {
-  if (!mergedReviews.some(r => r._id === backendReview._id)) {
-    mergedReviews.push({
-      ...backendReview,
-      image_url: backendReview.image_url || '', 
-    });
-  }
-});
+      const mergedReviews = [...localReviews];
+      backendReviews.forEach(backendReview => {
+        if (!mergedReviews.some(r => r._id === backendReview._id)) {
+          mergedReviews.push({
+            ...backendReview,
+            image_url: backendReview.photo_url || '', 
+          });
+        }
+      });
 
-      // Apply sorting
       let sortedReviews = [...mergedReviews];
       if (sortBy === 'highest') {
         sortedReviews.sort((a, b) => b.rating - a.rating);
@@ -110,7 +105,6 @@ backendReviews.forEach(backendReview => {
     try {
       let backendPosts: SocialPost[] = [];
       
-      // Try to fetch from backend
       try {
         const response = await fetch(`${API_URL}/api/social-posts`);
         if (response.ok) {
@@ -121,7 +115,6 @@ backendReviews.forEach(backendReview => {
         console.log('Backend not available for social posts, using local data only');
       }
 
-      // Merge backend and local social posts (remove duplicates by _id)
       const mergedPosts = [...localSocialPosts];
       backendPosts.forEach(backendPost => {
         if (!mergedPosts.some(p => p._id === backendPost._id)) {
@@ -129,9 +122,7 @@ backendReviews.forEach(backendReview => {
         }
       });
 
-      // Sort by display_order
       mergedPosts.sort((a, b) => a.display_order - b.display_order);
-
       setSocialPosts(mergedPosts);
     } catch (error) {
       console.error('Error merging social posts:', error);
@@ -156,7 +147,7 @@ backendReviews.forEach(backendReview => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({...formData,  photo_url: formData.image_url,}),
       });
 
       if (response.ok) {
@@ -169,7 +160,6 @@ backendReviews.forEach(backendReview => {
           image_url: '',
         });
         setShowReviewForm(false);
-        // Refresh reviews after submission
         fetchAndMergeReviews();
         setTimeout(() => setSubmitMessage(''), 5000);
       } else {
@@ -185,19 +175,14 @@ backendReviews.forEach(backendReview => {
 
   const getPlatformIcon = (platform: string) => {
     switch (platform.toLowerCase()) {
-      case 'instagram':
-        return <Instagram className="w-5 h-5" />;
-      case 'tiktok':
-        return <Tv2 className="w-5 h-5" />;
-      case 'youtube':
-        return <Youtube className="w-5 h-5" />;
-      default:
-        return null;
+      case 'instagram': return <Instagram className="w-5 h-5" />;
+      case 'tiktok': return <Tv2 className="w-5 h-5" />;
+      case 'youtube': return <Youtube className="w-5 h-5" />;
+      default: return null;
     }
   };
 
   const renderSocialEmbed = (post: SocialPost) => {
-    // For Instagram Reels and TikTok videos
     if (post.post_type === 'reel' || post.post_type === 'video') {
       return (
         <div key={post._id} className="bg-zinc-950 border border-zinc-800 overflow-hidden">
@@ -227,9 +212,7 @@ backendReviews.forEach(backendReview => {
             </div>
           ) : null}
           <div className="p-4">
-            <p className="text-white text-sm mb-3 line-clamp-2">
-              {post.caption}
-            </p>
+            <p className="text-white text-sm mb-3 line-clamp-2">{post.caption}</p>
             <div className="flex items-center space-x-4 text-zinc-500 text-sm">
               <div className="flex items-center space-x-1">
                 <Heart className="w-4 h-4" />
@@ -245,7 +228,6 @@ backendReviews.forEach(backendReview => {
       );
     }
 
-    // For Instagram images
     if (post.platform.toLowerCase() === 'instagram' && post.post_type === 'image') {
       return (
         <div key={post._id} className="bg-zinc-950 border border-zinc-800 overflow-hidden">
@@ -259,9 +241,7 @@ backendReviews.forEach(backendReview => {
             </div>
           )}
           <div className="p-4">
-            <p className="text-white text-sm mb-3 line-clamp-2">
-              {post.caption}
-            </p>
+            <p className="text-white text-sm mb-3 line-clamp-2">{post.caption}</p>
             <div className="flex items-center space-x-4 text-zinc-500 text-sm">
               <div className="flex items-center space-x-1">
                 <Heart className="w-4 h-4" />
@@ -277,7 +257,6 @@ backendReviews.forEach(backendReview => {
       );
     }
 
-    // For YouTube videos
     if (post.platform.toLowerCase() === 'youtube') {
       return (
         <div key={post._id} className="bg-zinc-950 border border-zinc-800 overflow-hidden">
@@ -296,9 +275,7 @@ backendReviews.forEach(backendReview => {
             </div>
           )}
           <div className="p-4">
-            <p className="text-white text-sm mb-3 line-clamp-2">
-              {post.caption}
-            </p>
+            <p className="text-white text-sm mb-3 line-clamp-2">{post.caption}</p>
           </div>
         </div>
       );
@@ -307,10 +284,9 @@ backendReviews.forEach(backendReview => {
     return null;
   };
 
-  const averageRating =
-    reviews.length > 0
-      ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1)
-      : '0';
+  const averageRating = reviews.length > 0
+    ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1)
+    : '0';
 
   return (
     <div className="min-h-screen bg-black px-4 py-12 pt-32">
@@ -340,9 +316,7 @@ backendReviews.forEach(backendReview => {
           <button
             onClick={() => setActiveTab('reviews')}
             className={`pb-4 tracking-wider transition-colors ${
-              activeTab === 'reviews'
-                ? 'text-white border-b-2 border-white'
-                : 'text-zinc-400 hover:text-white'
+              activeTab === 'reviews' ? 'text-white border-b-2 border-white' : 'text-zinc-400 hover:text-white'
             }`}
           >
             REVIEWS ({reviews.length})
@@ -350,9 +324,7 @@ backendReviews.forEach(backendReview => {
           <button
             onClick={() => setActiveTab('social')}
             className={`pb-4 tracking-wider transition-colors ${
-              activeTab === 'social'
-                ? 'text-white border-b-2 border-white'
-                : 'text-zinc-400 hover:text-white'
+              activeTab === 'social' ? 'text-white border-b-2 border-white' : 'text-zinc-400 hover:text-white'
             }`}
           >
             SOCIAL MEDIA ({socialPosts.length})
@@ -364,18 +336,12 @@ backendReviews.forEach(backendReview => {
             {reviews.length > 0 && (
               <div className="grid md:grid-cols-3 gap-8 mb-12">
                 <div className="bg-zinc-950 border border-zinc-800 p-8 text-center">
-                  <div className="text-5xl font-light text-white mb-2">
-                    {averageRating}
-                  </div>
+                  <div className="text-5xl font-light text-white mb-2">{averageRating}</div>
                   <div className="flex items-center justify-center gap-1 mb-2">
                     {[...Array(5)].map((_, i) => (
                       <Star
                         key={i}
-                        className={`w-5 h-5 ${
-                          i < Math.round(Number(averageRating))
-                            ? 'fill-yellow-400 text-yellow-400'
-                            : 'text-zinc-700'
-                        }`}
+                        className={`w-5 h-5 ${i < Math.round(Number(averageRating)) ? 'fill-yellow-400 text-yellow-400' : 'text-zinc-700'}`}
                       />
                     ))}
                   </div>
@@ -383,12 +349,8 @@ backendReviews.forEach(backendReview => {
                 </div>
 
                 <div className="bg-zinc-950 border border-zinc-800 p-8">
-                  <div className="text-3xl font-light text-white mb-2">
-                    {reviews.length}
-                  </div>
-                  <p className="text-zinc-400">
-                    {reviews.length === 1 ? 'Review' : 'Reviews'}
-                  </p>
+                  <div className="text-3xl font-light text-white mb-2">{reviews.length}</div>
+                  <p className="text-zinc-400">{reviews.length === 1 ? 'Review' : 'Reviews'}</p>
                 </div>
 
                 <div className="bg-zinc-950 border border-zinc-800 p-8">
@@ -407,9 +369,7 @@ backendReviews.forEach(backendReview => {
                   <button
                     onClick={() => setSortBy('latest')}
                     className={`px-4 py-2 tracking-wider transition-colors ${
-                      sortBy === 'latest'
-                        ? 'bg-white text-black'
-                        : 'bg-zinc-950 border border-zinc-800 text-white hover:border-white'
+                      sortBy === 'latest' ? 'bg-white text-black' : 'bg-zinc-950 border border-zinc-800 text-white hover:border-white'
                     }`}
                   >
                     LATEST
@@ -417,9 +377,7 @@ backendReviews.forEach(backendReview => {
                   <button
                     onClick={() => setSortBy('highest')}
                     className={`px-4 py-2 tracking-wider transition-colors ${
-                      sortBy === 'highest'
-                        ? 'bg-white text-black'
-                        : 'bg-zinc-950 border border-zinc-800 text-white hover:border-white'
+                      sortBy === 'highest' ? 'bg-white text-black' : 'bg-zinc-950 border border-zinc-800 text-white hover:border-white'
                     }`}
                   >
                     HIGHEST RATED
@@ -427,9 +385,7 @@ backendReviews.forEach(backendReview => {
                   <button
                     onClick={() => setSortBy('lowest')}
                     className={`px-4 py-2 tracking-wider transition-colors ${
-                      sortBy === 'lowest'
-                        ? 'bg-white text-black'
-                        : 'bg-zinc-950 border border-zinc-800 text-white hover:border-white'
+                      sortBy === 'lowest' ? 'bg-white text-black' : 'bg-zinc-950 border border-zinc-800 text-white hover:border-white'
                     }`}
                   >
                     LOWEST RATED
@@ -447,19 +403,16 @@ backendReviews.forEach(backendReview => {
 
             {showReviewForm && (
               <div className="mb-12 bg-zinc-950 border border-zinc-800 p-8">
-                <h2 className="text-2xl font-light tracking-wider text-white mb-6">
-                  WRITE YOUR REVIEW
-                </h2>
+                <h2 className="text-2xl font-light tracking-wider text-white mb-6">WRITE YOUR REVIEW</h2>
                 <form onSubmit={handleSubmitReview} className="space-y-6">
+
                   <div>
                     <label className="block text-zinc-400 mb-2">Your Name *</label>
                     <input
                       type="text"
                       required
                       value={formData.author_name}
-                      onChange={(e) =>
-                        setFormData({ ...formData, author_name: e.target.value })
-                      }
+                      onChange={(e) => setFormData({ ...formData, author_name: e.target.value })}
                       className="w-full bg-black border border-zinc-800 px-4 py-3 text-white focus:border-white focus:outline-none"
                     />
                   </div>
@@ -470,9 +423,7 @@ backendReviews.forEach(backendReview => {
                       type="email"
                       required
                       value={formData.author_email}
-                      onChange={(e) =>
-                        setFormData({ ...formData, author_email: e.target.value })
-                      }
+                      onChange={(e) => setFormData({ ...formData, author_email: e.target.value })}
                       className="w-full bg-black border border-zinc-800 px-4 py-3 text-white focus:border-white focus:outline-none"
                     />
                   </div>
@@ -480,7 +431,7 @@ backendReviews.forEach(backendReview => {
                   <div>
                     <label className="block text-zinc-400 mb-2">Rating *</label>
                     <div className="flex gap-2">
-                      {[1, 2, 3, 4, 5].map((rating) => (
+                      {[1,2,3,4,5].map((rating) => (
                         <button
                           key={rating}
                           type="button"
@@ -488,11 +439,7 @@ backendReviews.forEach(backendReview => {
                           className="focus:outline-none"
                         >
                           <Star
-                            className={`w-8 h-8 ${
-                              rating <= formData.rating
-                                ? 'fill-yellow-400 text-yellow-400'
-                                : 'text-zinc-700'
-                            } hover:text-yellow-400 transition-colors`}
+                            className={`w-8 h-8 ${rating <= formData.rating ? 'fill-yellow-400 text-yellow-400' : 'text-zinc-700'} hover:text-yellow-400 transition-colors`}
                           />
                         </button>
                       ))}
@@ -504,30 +451,63 @@ backendReviews.forEach(backendReview => {
                     <textarea
                       required
                       value={formData.review_text}
-                      onChange={(e) =>
-                        setFormData({ ...formData, review_text: e.target.value })
-                      }
+                      onChange={(e) => setFormData({ ...formData, review_text: e.target.value })}
                       rows={4}
                       className="w-full bg-black border border-zinc-800 px-4 py-3 text-white focus:border-white focus:outline-none resize-none"
                     />
                   </div>
 
+                  {/* Updated Cloudinary Image Upload */}
                   <div>
-                    <label className="block text-zinc-400 mb-2">
-                      Image URL (optional)
-                    </label>
+                    <label className="block text-zinc-400 mb-2">Add a Photo (optional)</label>
                     <input
-                      type="url"
-                      value={formData.image_url}
-                      onChange={(e) =>
-                        setFormData({ ...formData, image_url: e.target.value })
-                      }
-                      placeholder="https://example.com/image.jpg"
+                      type="file"
+                      accept="image/*"
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+
+                        try {
+                          setSubmitMessage('Uploading image...');
+                          const sigRes = await fetch(`${API_URL}/api/get-signature`, { method: 'POST' });
+                          const sigData = await sigRes.json();
+
+                          const form = new FormData();
+                          form.append('file', file);
+                          form.append('api_key', sigData.apiKey);
+                          form.append('timestamp', sigData.timestamp.toString());
+                          form.append('signature', sigData.signature);
+
+                          const cloudRes = await fetch(
+                            `https://api.cloudinary.com/v1_1/${sigData.cloudName}/upload`,
+                            { method: 'POST', body: form }
+                          );
+                          const cloudData = await cloudRes.json();
+
+                          setFormData((prev) => ({ ...prev, image_url: cloudData.secure_url }));
+                          setSubmitMessage('');
+                        } catch (err) {
+                          console.error('Cloudinary upload failed:', err);
+                          alert('Failed to upload image. Please try again.');
+                          setSubmitMessage('');
+                        }
+                      }}
                       className="w-full bg-black border border-zinc-800 px-4 py-3 text-white focus:border-white focus:outline-none"
                     />
-                    <p className="text-xs text-zinc-600 mt-1">
-                      Add a photo to your review (optional)
-                    </p>
+
+                    {submitMessage === 'Uploading image...' && (
+                      <p className="text-xs text-zinc-400 mt-1 animate-pulse">Uploading image...</p>
+                    )}
+
+                    {formData.image_url && (
+                      <div className="mt-2">
+                        <img
+                          src={formData.image_url}
+                          alt="Preview"
+                          className="w-48 h-48 object-cover border border-zinc-700"
+                        />
+                      </div>
+                    )}
                   </div>
 
                   <button
@@ -542,9 +522,7 @@ backendReviews.forEach(backendReview => {
             )}
 
             {loading ? (
-              <div className="text-center text-zinc-400 py-12">
-                Loading reviews...
-              </div>
+              <div className="text-center text-zinc-400 py-12">Loading reviews...</div>
             ) : reviews.length === 0 ? (
               <div className="text-center py-12">
                 <p className="text-zinc-400 text-lg">No reviews yet. Be the first!</p>
@@ -555,9 +533,7 @@ backendReviews.forEach(backendReview => {
                   <div
                     key={review._id}
                     className="bg-zinc-950 border border-zinc-800 p-6 hover:border-zinc-600 transition-all"
-                    style={{
-                      animation: `fade-in-up 0.5s ease-out ${index * 0.05}s both`,
-                    }}
+                    style={{ animation: `fade-in-up 0.5s ease-out ${index*0.05}s both` }}
                   >
                     <div className="flex items-start gap-3 mb-4">
                       {review.author_image ? (
@@ -568,19 +544,13 @@ backendReviews.forEach(backendReview => {
                         />
                       ) : (
                         <div className="w-12 h-12 rounded-full bg-zinc-800 flex items-center justify-center">
-                          <span className="text-white text-lg">
-                            {review.author_name.charAt(0).toUpperCase()}
-                          </span>
+                          <span className="text-white text-lg">{review.author_name.charAt(0).toUpperCase()}</span>
                         </div>
                       )}
                       <div className="flex-1">
-                        <h3 className="text-white font-light mb-1">
-                          {review.author_name}
-                        </h3>
+                        <h3 className="text-white font-light mb-1">{review.author_name}</h3>
                         {review.verified_purchase && (
-                          <p className="text-xs text-green-400 tracking-wider">
-                            VERIFIED PURCHASE
-                          </p>
+                          <p className="text-xs text-green-400 tracking-wider">VERIFIED PURCHASE</p>
                         )}
                       </div>
                     </div>
@@ -589,23 +559,17 @@ backendReviews.forEach(backendReview => {
                       {[...Array(5)].map((_, i) => (
                         <Star
                           key={i}
-                          className={`w-4 h-4 ${
-                            i < review.rating
-                              ? 'fill-yellow-400 text-yellow-400'
-                              : 'text-zinc-700'
-                          }`}
+                          className={`w-4 h-4 ${i < review.rating ? 'fill-yellow-400 text-yellow-400' : 'text-zinc-700'}`}
                         />
                       ))}
                     </div>
 
-                    <p className="text-zinc-300 text-sm leading-relaxed mb-3">
-                      {review.review_text}
-                    </p>
+                    <p className="text-zinc-300 text-sm leading-relaxed mb-3">{review.review_text}</p>
 
-                    {review.image_url && (
+                    {review.photo_url && (
                       <div className="mb-3 overflow-hidden rounded border border-zinc-800">
                         <img
-                          src={review.image_url}
+                          src={review.photo_url}
                           alt={`Review by ${review.author_name}`}
                           className="w-full h-48 object-cover hover:scale-105 transition-transform duration-300"
                         />
@@ -613,11 +577,7 @@ backendReviews.forEach(backendReview => {
                     )}
 
                     <p className="text-xs text-zinc-600">
-                      {new Date(review.created_at).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                      })}
+                      {new Date(review.created_at).toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' })}
                     </p>
                   </div>
                 ))}
@@ -630,9 +590,7 @@ backendReviews.forEach(backendReview => {
           <div>
             {socialPosts.length === 0 ? (
               <div className="text-center py-12">
-                <p className="text-zinc-400 text-lg">
-                  No social media posts yet
-                </p>
+                <p className="text-zinc-400 text-lg">No social media posts yet</p>
               </div>
             ) : (
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -640,15 +598,11 @@ backendReviews.forEach(backendReview => {
                   <div
                     key={post._id}
                     className="relative overflow-hidden border border-zinc-800 hover:border-zinc-600 transition-all"
-                    style={{
-                      animation: `fade-in-up 0.5s ease-out ${index * 0.05}s both`,
-                    }}
+                    style={{ animation: `fade-in-up 0.5s ease-out ${index*0.05}s both` }}
                   >
                     <div className="absolute top-4 right-4 z-10 bg-black/80 backdrop-blur-sm border border-zinc-700 rounded-full p-2 flex items-center gap-2">
                       {getPlatformIcon(post.platform)}
-                      <span className="text-white text-xs font-medium tracking-wider pr-2">
-                        {post.platform.toUpperCase()}
-                      </span>
+                      <span className="text-white text-xs font-medium tracking-wider pr-2">{post.platform.toUpperCase()}</span>
                     </div>
 
                     {renderSocialEmbed(post)}
@@ -662,14 +616,8 @@ backendReviews.forEach(backendReview => {
 
       <style>{`
         @keyframes fade-in-up {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
         }
       `}</style>
     </div>

@@ -37,7 +37,7 @@ router.get('/reviews', async (req, res) => {
 // Submit a new review (public)
 router.post('/reviews', async (req, res) => {
   try {
-    const { author_name, author_email, rating, review_text, product_id } = req.body;
+    const { author_name, author_email, rating, review_text, product_id, photo_url } = req.body;
 
     // Validation
     if (!author_name || !author_email || !rating || !review_text) {
@@ -54,6 +54,7 @@ router.post('/reviews', async (req, res) => {
       author_email,
       rating,
       review_text,
+      photo_url: photo_url ,
       product_id: product_id || null,
       is_approved: false,
       verified_purchase: false,
