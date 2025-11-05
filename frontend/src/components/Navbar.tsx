@@ -1,6 +1,6 @@
 import { ShoppingBag, Menu, X, User, LogOut, Package, LayoutDashboard, Plus, Folder, Star } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom'; // ✅ Added for router navigation
+import { Link } from 'react-router-dom'; 
 
 interface User {
   name: string;

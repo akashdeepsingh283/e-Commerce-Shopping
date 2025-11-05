@@ -49,7 +49,6 @@ export default function Hero() {
 
       {/* Hero content */}
       <div className="relative z-10 text-center px-4">
-
 <div className="relative inline-block mx-auto mb-6 animate-slide-up">
   <div className="absolute rounded-full bg-white blur-[120px] opacity-80 animate-glow-white" />
   <img
