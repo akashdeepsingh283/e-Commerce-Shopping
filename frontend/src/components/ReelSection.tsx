@@ -74,22 +74,22 @@ export default function ReelSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-4xl font-light tracking-widest text-white">LATEST REELS</h2>
+          <h2 className="text-2xl font-light tracking-widest text-white">LATEST REELS</h2>
           <button
             onClick={() => navigate('/reviews')}
-            className="text-white border border-white px-6 py-2 tracking-widest hover:bg-white hover:text-black transition-all"
+            className="text-white border border-white px-4 py-2 tracking-widest hover:bg-white hover:text-black transition-all"
           >
             VIEW ALL
           </button>
         </div>
 
-        {/* Reels */}
         <div className="flex overflow-x-auto gap-4 py-2 scrollbar-thin scrollbar-thumb-zinc-700 scrollbar-track-zinc-900">
           {reels.map((reel, index) => (
             <div
-              key={reel._id}
-              className="flex-shrink-0 w-64 bg-zinc-950 border border-zinc-800 rounded-lg overflow-hidden hover:scale-[1.02] transition-transform duration-300 relative"
-            >
+  key={reel._id}
+  className="flex-shrink-0 w-40 sm:w-56 md:w-64 bg-zinc-950 border border-zinc-800 rounded-lg overflow-hidden hover:scale-[1.02] transition-transform duration-300 relative"
+>
+
               {/* Video Container */}
               <div
                 className="relative w-full cursor-pointer"

@@ -65,9 +65,9 @@ export default function Navbar(props: NavbarProps) {
         <div className="flex items-center justify-between ">
           {/* Logo */}
           <button onClick={onHomeClick} className="flex items-center space-x-3">
-            <div className="text-2xl font-light tracking-widest text-white">
-              SAI NAMAN PEARLS
-            </div>
+            <div className="text-base sm:text-lg md:text-2xl font-light tracking-widest text-white">
+  SAI NAMAN PEARLS
+</div>
           </button>
 
           {/* Desktop Navigation */}

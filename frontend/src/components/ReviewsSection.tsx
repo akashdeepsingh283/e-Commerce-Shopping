@@ -62,9 +62,10 @@ export default function ReviewsSection({ onViewAllClick }: ReviewsSectionProps) 
       <hr className="my-16 border-zinc-500" />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="text-4xl sm:text-5xl font-extralight tracking-widest text-white mb-2">
-            CUSTOMER REVIEWS
-          </h2>
+          <h2 className="text-2xl sm:text-3xl md:text-5xl font-extralight tracking-widest text-white mb-2">
+  CUSTOMER REVIEWS
+</h2>
+
           <p className="text-zinc-400 tracking-wide">
             Loved by jewelry enthusiasts worldwide
           </p>
@@ -193,7 +194,6 @@ export default function ReviewsSection({ onViewAllClick }: ReviewsSectionProps) 
           to { opacity: 1; transform: translateY(0); }
           }
           `}</style>
-          <hr className="my-16 border-zinc-500" />
     </section>
   );
 }

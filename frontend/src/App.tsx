@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
-
 import ProductGrid from './components/ProductGrid';
 import FeaturedCollections from './components/FeaturedCollections';
 import About from './components/About';

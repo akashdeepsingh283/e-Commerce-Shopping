@@ -149,8 +149,8 @@ function AboutVideo() {
   return (
     <div className="relative group flex flex-col items-center mt-10">
       <h2
-      className=" text-3xl font-light tracking-widest text-white mb-6">
-      OUR PRESENCE IN MEDIA, OUR BRAND HAS BEEN FEATURED IN WELL-KNOWN NEWS OUTLETS SUCH AS...</h2>
+  className="text-lg sm:text-2xl md:text-3xl font-light tracking-widest text-white mb-6">
+  OUR PRESENCE IN MEDIA, OUR BRAND HAS BEEN FEATURED IN WELL-KNOWN NEWS OUTLETS SUCH AS...</h2>
       <video
         ref={videoRef}
         src="/review/about.mp4"
