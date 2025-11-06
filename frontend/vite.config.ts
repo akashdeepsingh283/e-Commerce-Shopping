@@ -9,6 +9,7 @@ export default defineConfig({
   // },
   // Proxy /api requests to backend during development. Set VITE_BACKEND_URL in .env if your backend runs on a different port.
   server: {
+      host: true,
     proxy: {
       '/api': {
         // default to the backend on 5001 (your server port). You can override

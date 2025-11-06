@@ -23,6 +23,7 @@ import AdminDashboard from './components/AdminDashboard';
 import ReviewsPage from './components/ReviewsPage';
 import AdminReviewApproval from './components/AdminReviewApproval';
 import ReviewsSection from './components/ReviewsSection';
+import ReelSection from './components/ReelSection';
 import { useAuth } from './context/AuthContext';
 
 interface Product {
@@ -220,6 +221,7 @@ function App() {
               <ProductGrid onAddToCart={handleAddToCart} onViewProduct={handleViewProduct} />
               <About onReviewsClick={() => navigate('/reviews')} />
               <ReviewsSection onViewAllClick={() => navigate('/reviews')} />
+              <ReelSection  />
               <Footer onContactClick={() => navigate('/contact')} />
             </>
           }
