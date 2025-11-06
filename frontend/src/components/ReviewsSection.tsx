@@ -63,8 +63,8 @@ export default function ReviewsSection({ onViewAllClick }: ReviewsSectionProps) 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-2xl sm:text-3xl md:text-5xl font-extralight tracking-widest text-white mb-2">
-  CUSTOMER REVIEWS
-</h2>
+             CUSTOMER REVIEWS
+              </h2>
 
           <p className="text-zinc-400 tracking-wide">
             Loved by jewelry enthusiasts worldwide

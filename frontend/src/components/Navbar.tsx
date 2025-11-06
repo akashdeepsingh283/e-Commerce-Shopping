@@ -166,18 +166,65 @@ export default function Navbar(props: NavbarProps) {
       </div>
 
       {/* Mobile Menu */}
-      {isMenuOpen && (
-        <div className="md:hidden bg-zinc-950 border-t border-zinc-900">
-          <div className="px-4 py-6 space-y-4">
-            <Link to="/" onClick={() => setIsMenuOpen(false)} className="block w-full text-left text-zinc-400 hover:text-white transition-colors tracking-wider text-sm">HOME</Link>
-            <Link to="/collections" onClick={() => setIsMenuOpen(false)} className="block w-full text-left text-zinc-400 hover:text-white transition-colors tracking-wider text-sm">COLLECTIONS</Link>
-            <Link to="/products" onClick={() => setIsMenuOpen(false)} className="block w-full text-left text-zinc-400 hover:text-white transition-colors tracking-wider text-sm">PRODUCTS</Link>
-            <Link to="/contact" onClick={() => setIsMenuOpen(false)} className="block w-full text-left text-zinc-400 hover:text-white transition-colors tracking-wider text-sm">CONTACT</Link>
-            <Link to="/about" onClick={() => setIsMenuOpen(false)} className="block w-full text-left text-zinc-400 hover:text-white transition-colors tracking-wider text-sm">ABOUT</Link>
-            <Link to="/reviews" onClick={() => setIsMenuOpen(false)} className="block w-full text-left text-zinc-400 hover:text-white transition-colors tracking-wider text-sm">REVIEWS</Link>
-          </div>
-        </div>
-      )}
+      {/* Mobile Slide-In Sidebar */}
+<div
+  className={`fixed inset-0 z-40 md:hidden transition-opacity duration-300 ${
+    isMenuOpen ? "opacity-100 pointer-events-auto bg-black/50 backdrop-blur-sm" : "opacity-0 pointer-events-none"
+  }`}
+  onClick={() => setIsMenuOpen(false)}
+/>
+
+<div
+  className={`fixed top-0 left-0 h-full w-64 bg-zinc-950 border-r border-zinc-900 z-50 transform transition-transform duration-300 md:hidden ${
+    isMenuOpen ? "translate-x-0" : "-translate-x-full"
+  }`}
+>
+  <div className="px-6 py-8 space-y-6">
+    <Link
+      to="/"
+      onClick={() => setIsMenuOpen(false)}
+      className="block text-zinc-300 hover:text-white tracking-wider text-sm"
+    >
+      HOME
+    </Link>
+    <Link
+      to="/collections"
+      onClick={() => setIsMenuOpen(false)}
+      className="block text-zinc-300 hover:text-white tracking-wider text-sm"
+    >
+      COLLECTIONS
+    </Link>
+    <Link
+      to="/products"
+      onClick={() => setIsMenuOpen(false)}
+      className="block text-zinc-300 hover:text-white tracking-wider text-sm"
+    >
+      PRODUCTS
+    </Link>
+    <Link
+      to="/contact"
+      onClick={() => setIsMenuOpen(false)}
+      className="block text-zinc-300 hover:text-white tracking-wider text-sm"
+    >
+      CONTACT
+    </Link>
+    <Link
+      to="/about"
+      onClick={() => setIsMenuOpen(false)}
+      className="block text-zinc-300 hover:text-white tracking-wider text-sm"
+    >
+      ABOUT
+    </Link>
+    <Link
+      to="/reviews"
+      onClick={() => setIsMenuOpen(false)}
+      className="block text-zinc-300 hover:text-white tracking-wider text-sm"
+    >
+      REVIEWS
+    </Link>
+  </div>
+</div>
+
     </nav>
   );
 }

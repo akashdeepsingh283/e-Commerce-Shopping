@@ -1,4 +1,4 @@
-// App.tsx
+import { ShoppingCart} from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
@@ -51,7 +51,6 @@ function App() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [selectedProductSlug, setSelectedProductSlug] = useState<string | null>(null);
   const [orderId, setOrderId] = useState<string | null>(null);
-  
 
   const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
 
@@ -80,7 +79,6 @@ function App() {
       console.error('Failed to sync cart', err);
     }
   };
-
 
   const handleAddToCart = async (product: Product) => {
     if (user) {
@@ -220,7 +218,7 @@ function App() {
               <ProductGrid onAddToCart={handleAddToCart} onViewProduct={handleViewProduct} />
               <About onReviewsClick={() => navigate('/reviews')} />
               <ReviewsSection onViewAllClick={() => navigate('/reviews')} />
-              <ReelSection  />
+              <ReelSection />
               <Footer onContactClick={() => navigate('/contact')} />
             </>
           }
@@ -285,6 +283,23 @@ function App() {
         <Route path="/admin-reviews" element={<AdminReviewApproval onClose={() => navigate('/')} />} />
       </Routes>
 
+      {/* ✅ FLOATING MOBILE CART BUTTON */}
+      <button
+  className="fixed bottom-4 right-4 z-50 p-3  md:hidden flex items-center justify-center"
+  onClick={() => setIsCartOpen(true)}
+>
+  <span className="relative flex">
+    <ShoppingCart className="w-6 h-6 text-white" />
+
+    {cartItems.length > 0 && (
+      <span className="absolute -top-2 -right-2 bg-white text-black text-xs w-5 h-5 rounded-full flex items-center justify-center font-semibold">
+        {cartItems.reduce((sum, item) => sum + item.quantity, 0)}
+      </span>
+    )}
+  </span>
+</button>
+
+
       <CartSidebar
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
@@ -297,8 +312,6 @@ function App() {
       <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} initialMode="login" />
       <AdminProductForm isOpen={isAdminProductFormOpen} onClose={() => setIsAdminProductFormOpen(false)} />
       <AdminCollectionForm isOpen={isAdminCollectionFormOpen} onClose={() => setIsAdminCollectionFormOpen(false)} />
-
-     
     </div>
   );
 }
